@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#05040c;overflow:hidden}
+a{color:oklch(.82 .12 250);text-decoration:none}
+a:hover{color:oklch(.92 .13 250)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="position:relative;width:100%;height:100vh;overflow:hidden;font-family:'JetBrains Mono',ui-monospace,monospace;color:#e8e6ff;user-select:none">
+  <div style="{{ bgStyle }}"></div>
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 2px, rgba(0,0,0,0) 2px 4px);opacity:.5;pointer-events:none;z-index:40"></div>
+
+  <div style="{{ cameraStyle }}">
+    <div style="{{ caveTop }}"></div>
+    <div style="{{ caveBottom }}"></div>
+    <div style="{{ ringInner }}"></div>
+    <div style="{{ ringOuter }}"></div>
+
+    <div style="{{ heroGlow }}"></div>
+    <div style="{{ heroWrap }}">
+      <div style="{{ heroSprite }}"></div>
+    </div>
+
+    <sc-for list="{{ nodes }}" as="n" hint-placeholder-count="7">
+      <div style="position:absolute;left:0;top:0">
+        <div style="{{ n.spoke }}"></div>
+        <div style="{{ n.glow }}"></div>
+        <div style="{{ n.wrap }}" onClick="{{ n.onClick }}">
+          <div style="{{ n.sprite }}"></div>
+        </div>
+        <div style="{{ n.label }}">{{ n.title }}</div>
+        <div style="{{ n.panel }}">
+          <div style="display:flex;align-items:baseline;gap:12px">
+            <div style="{{ n.titleStyle }}">{{ n.title }}</div>
+            <div style="font-size:14px;letter-spacing:2px;opacity:.55">{{ n.tag }}</div>
+          </div>
+          <div style="margin-top:12px;font-size:17px;font-weight:700;letter-spacing:1px;opacity:.9">{{ n.meta }}</div>
+          <div style="margin-top:10px;font-size:16px;line-height:1.6;opacity:.78;text-wrap:pretty">{{ n.body }}</div>
+        </div>
+      </div>
+    </sc-for>
+
+    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="6">
+      <div style="position:absolute;left:0;top:0">
+        <div style="{{ s.spoke }}"></div>
+        <div style="{{ s.nodeWrap }}" onClick="{{ s.onClick }}">
+          <div style="{{ s.nodeInner }}">{{ s.num }}</div>
+        </div>
+        <div style="{{ s.panel }}">
+          <div style="{{ s.titleStyle }}">{{ s.title }}</div>
+          <div style="margin-top:16px;font-size:19px;line-height:1.6;opacity:.82;text-wrap:pretty">{{ s.body }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="{{ coverScrim }}"></div>
+  <div style="{{ coverCard }}">
+    <div style="font-size:13px;letter-spacing:9px;text-transform:uppercase;opacity:.6">Participação I</div>
+    <div style="margin-top:18px;font-family:'Press Start 2P',monospace;font-size:20px;line-height:1.6;letter-spacing:1px;text-shadow:0 4px 0 rgba(0,0,0,.6)">Metodologias de desenvolvimento e processos de software:</div>
+    <div style="margin-top:20px;font-family:'Press Start 2P',monospace;font-size:56px;letter-spacing:5px;color:#a8e6ff;text-shadow:0 6px 0 rgba(0,0,0,.6)">CRYSTAL</div>
+    <div style="margin-top:24px;width:100%;height:3px;background:rgba(168,230,255,.4)"></div>
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;font-size:17px;letter-spacing:2px">
+      <div style="font-size:12px;letter-spacing:6px;text-transform:uppercase;opacity:.5">Participantes</div>
+      <div style="white-space:nowrap">Pedro Henrique Urio dos Santos</div>
+      <div style="white-space:nowrap">Bruno Werner</div>
+    </div>
+  </div>
+
+  <div style="position:absolute;left:0;right:0;bottom:0;height:92px;background:linear-gradient(0deg, rgba(4,3,12,.92) 22%, rgba(4,3,12,0));pointer-events:none;z-index:44"></div>
+
+  <div style="{{ hudStyle }}">
+    <sc-for list="{{ hud }}" as="g" hint-placeholder-count="13">
+      <div style="{{ g.dot }}" onClick="{{ g.onClick }}"></div>
+    </sc-for>
+  </div>
+
+  <div style="position:absolute;right:22px;bottom:26px;z-index:45;font-size:11px;letter-spacing:2px;opacity:.5;text-transform:uppercase">← → navegar · esc visão geral</div>
+
+  <div style="{{ zoomOutBtn }}" onClick="{{ toggleOverview }}">{{ zoomOutLabel }}</div>
+
+  <div style="position:absolute;right:22px;top:22px;display:flex;gap:8px;z-index:45">
+    <sc-for list="{{ variants }}" as="v" hint-placeholder-count="3">
+      <div style="{{ v.btn }}" onClick="{{ v.onClick }}">{{ v.label }}</div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;caverna&quot;,&quot;gelo&quot;,&quot;vulcanica&quot;],&quot;default&quot;:&quot;caverna&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estilo&quot;},&quot;motionMs&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:600,&quot;max&quot;:3000,&quot;step&quot;:100,&quot;default&quot;:1500,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Movimento&quot;},&quot;showGlow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Estilo&quot;},&quot;showHud&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Estilo&quot;}}">
+const W = 3000, H = 3000, CX = 1500, CY = 1500;
+const R_GEM = 470, R_STEP = 830, GEM_PANEL_R = 235, STEP_PANEL_R = 310;
+const GEM_PW = 330, GEM_PH = 120, STEP_PW = 430, STEP_PH = 155;
+
+const PALETTES = {
+  caverna:   { bgTop:'#08061a', bgBot:'#160f33', halo:'rgba(120,90,220,.30)', rock:['#312a5e','#221d46','#151132'], label:'Caverna' },
+  gelo:      { bgTop:'#03121a', bgBot:'#083039', halo:'rgba(70,190,215,.26)', rock:['#215061','#163b49','#0d2530'], label:'Gelo' },
+  vulcanica: { bgTop:'#160908', bgBot:'#2c1310', halo:'rgba(235,120,60,.24)', rock:['#452520','#301814','#1d0f0c'], label:'Vulcânica' }
+};
+
+const STEPS = [
+  { num:'01', title:'O QUE É CRYSTAL', hue:196, chroma:0.135,
+    body:'Família de métodos ágeis criada por Alistair Cockburn (IBM, 1997). Não é um método único: é um conjunto calibrado ao tamanho da equipe e à criticidade do projeto.' },
+  { num:'02', title:'PRINCÍPIOS', hue:150, chroma:0.140,
+    body:'Pessoas acima de processos, entrega frequente de software funcionando, comunicação direta e melhoria contínua do próprio processo. O processo é ferramenta, não lei.' },
+  { num:'03', title:'AS 7 PROPRIEDADES', hue:95, chroma:0.150,
+    body:'Entrega frequente · melhoria reflexiva · comunicação osmótica · segurança pessoal · foco · acesso fácil a usuários experts · ambiente técnico com testes e integração contínua.' },
+  { num:'04', title:'ESCALA POR CORES', hue:60, chroma:0.160,
+    body:'Dois eixos definem qual Crystal usar: número de pessoas (Clear → Violet) e criticidade do dano em caso de falha (conforto, dinheiro discricionário, dinheiro essencial, vida).' },
+  { num:'05', title:'PAPÉIS E CICLO', hue:22, chroma:0.165,
+    body:'Patrocinador, designer sênior, designer-programador e usuário especialista. O trabalho corre em ciclos de projeto, entregas e iterações, com planejamento leve e alinhamento diário.' },
+  { num:'06', title:'QUANDO USAR', hue:300, chroma:0.150,
+    body:'Forte em equipes pequenas e co-localizadas, com usuário acessível. Exige disciplina: quanto maior a escala, menos o método prescreve e mais a equipe precisa decidir.' }
+];
+
+const GEMS = [
+  { id:'clear',  title:'CLEAR',  tag:'D6',   hue:250, chroma:0.030, lift:1.10, meta:'até 8 pessoas · uma sala',
+    body:'O único nível totalmente documentado por Cockburn. Comunicação osmótica e entregas frequentes.' },
+  { id:'yellow', title:'YELLOW', tag:'D20',  hue:95,  chroma:0.155, lift:1.04, meta:'até 20 pessoas',
+    body:'Papéis mais explícitos e testes automatizados entram em cena. Ainda leve, mas com coordenação formalizada.' },
+  { id:'orange', title:'ORANGE', tag:'D40',  hue:62,  chroma:0.165, lift:1.00, meta:'até 40 pessoas',
+    body:'Múltiplas equipes, arquitetura compartilhada e sincronização entre frentes tornam-se o problema central.' },
+  { id:'red',    title:'RED',    tag:'D80',  hue:26,  chroma:0.175, lift:0.98, meta:'até 80 pessoas',
+    body:'Programa grande: governança, integração contínua entre times e rastreabilidade ganham peso.' },
+  { id:'maroon', title:'MAROON', tag:'D200', hue:8,   chroma:0.150, lift:0.86, meta:'até 200 pessoas',
+    body:'Escala corporativa. Cockburn descreve o território, mas não prescreve o método em detalhe.' },
+  { id:'blue',   title:'BLUE',   tag:'D500', hue:252, chroma:0.170, lift:1.00, meta:'até 500 pessoas',
+    body:'Nível teórico da escala. Serve para posicionar o projeto, não como receita pronta.' },
+  { id:'violet', title:'VIOLET', tag:'D1000',hue:300, chroma:0.170, lift:1.02, meta:'até 1000 pessoas',
+    body:'Extremo da família: o método precisa ser reinventado a cada ordem de grandeza.' }
+];
+
+function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+function shades(hue, chroma, lift){
+  return [0.40, 0.56, 0.73, 0.92].map(l => `oklch(${(l * lift).toFixed(3)} ${(chroma * (1.25 - l * 0.45)).toFixed(3)} ${hue})`);
+}
+
+function gemSprite(w, h, hue, chroma, lift, S){
+  const c = shades(hue, chroma, lift);
+  const outline = `oklch(${(0.17 * lift).toFixed(3)} ${(chroma * 0.5).toFixed(3)} ${hue})`;
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext('2d');
+  for (let y = 0; y < h; y++){
+    for (let x = 0; x < w; x++){
+      const dx = (x + 0.5 - w / 2) / (w / 2);
+      const dy = (y + 0.5 - h / 2) / (h / 2);
+      const d = Math.abs(dx) + Math.abs(dy);
+      if (d > 1) continue;
+      let col;
+      if (d > 0.90) col = outline;
+      else {
+        let b = 0.52 - 0.34 * dy - 0.26 * dx;
+        if (dx > -0.10 && dx < 0.22) b += 0.14;
+        if (dy > 0.35) b -= 0.10;
+        b = Math.max(0, Math.min(1, b));
+        let f = b * 3, i = Math.floor(f);
+        const r = f - i;
+        if ((x + y) % 2 === 0 && r > 0.5) i += 1;
+        if ((x + y) % 2 === 1 && r > 0.85) i += 1;
+        i = Math.max(0, Math.min(3, i));
+        col = c[i];
+        if (dx < -0.14 && dx > -0.52 && dy < -0.24 && dy > -0.62 && (x + y) % 4 === 0) col = '#ffffff';
+      }
+      ctx.fillStyle = col;
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+  return { url: cv.toDataURL(), w: w * S, h: h * S };
+}
+
+function caveTexture(rock, cols, rows, seed){
+  const rand = rng(seed);
+  const cv = document.createElement('canvas');
+  cv.width = cols; cv.height = rows;
+  const ctx = cv.getContext('2d');
+  const noise = (i, k) => Math.sin(i * k) * 0.5 + Math.sin(i * k * 2.3 + 1.7) * 0.3 + Math.sin(i * k * 5.1) * 0.2;
+  for (let cx = 0; cx < cols; cx++){
+    const depth = Math.max(2, Math.round(rows * 0.35 + (noise(cx, 0.15) + 1) * rows * 0.18 + (rand() < 0.07 ? rows * 0.22 : 0)));
+    for (let k = 0; k < Math.min(rows, depth); k++){
+      const cy = rows - 1 - k;
+      const edge = k >= depth - 2;
+      ctx.fillStyle = edge ? ((cx + k) % 2 ? rock[2] : rock[0]) : rock[0];
+      ctx.fillRect(cx, cy, 1, 1);
+    }
+  }
+  return cv.toDataURL();
+}
+
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state = { idx: 0, visited: [], variant: props.variant || 'caverna', vw: 1440, vh: 810 };
+    this.rootRef = React.createRef();
+    this.cache = {};
+  }
+  componentDidMount(){
+    this.measure();
+    this.onResize = () => this.measure();
+    this.onKey = (e) => {
+      const last = STEPS.length + GEMS.length;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); this.go(Math.min(last, Math.max(0, this.state.idx) + 1)); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); if (this.state.idx <= 0) this.setState({ idx: -1 }); else this.go(this.state.idx - 1); }
+      else if (e.key === 'Escape'){ this.setState({ idx: -1 }); }
+    };
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('keydown', this.onKey);
+  }
+  measure(){
+    const el = this.rootRef.current;
+    if (!el) return;
+    const w = Math.round(el.getBoundingClientRect().width);
+    const h = Math.round(el.getBoundingClientRect().height);
+    if (w && (w !== this.state.vw || h !== this.state.vh)) this.setState({ vw: w, vh: h });
+  }
+  go(i){ this.setState(s => ({ idx: i, visited: s.visited.indexOf(i) < 0 ? s.visited.concat([i]) : s.visited })); }
+  sprite(key, fn){ if (!this.cache[key]) this.cache[key] = fn(); return this.cache[key]; }
+
+  renderVals(){
+    const { idx, variant, vw, vh } = this.state;
+    const p = PALETTES[variant] || PALETTES.caverna;
+    const ms = this.props.motionMs ?? 1500;
+    const glowOn = this.props.showGlow ?? true;
+    const ease = 'cubic-bezier(.62,.02,.18,1)';
+    const rad = d => d * Math.PI / 180;
+
+    const gemGeo = GEMS.map((g, k) => {
+      const a = -90 + k * (360 / GEMS.length);
+      const dx = Math.cos(rad(a)), dy = Math.sin(rad(a));
+      return { g, k, a, dx, dy, x: CX + dx * R_GEM, y: CY + dy * R_GEM,
+        px: CX + dx * (R_GEM + GEM_PANEL_R), py: CY + dy * (R_GEM + GEM_PANEL_R) };
+    });
+    const stepGeo = STEPS.map((s, k) => {
+      const a = -90 + (360 / STEPS.length) / 2 + k * (360 / STEPS.length);
+      const dx = Math.cos(rad(a)), dy = Math.sin(rad(a));
+      return { s, k, a, dx, dy, x: CX + dx * R_STEP, y: CY + dy * R_STEP,
+        px: CX + dx * (R_STEP + STEP_PANEL_R), py: CY + dy * (R_STEP + STEP_PANEL_R) };
+    });
+
+    const stops = [{ cx: CX - 250, cy: CY - 60, w: 1100, h: 900 }];
+    stepGeo.forEach(t => stops.push({ cx: (t.x + t.px) / 2, cy: (t.y + t.py) / 2, w: 940, h: 600 }));
+    gemGeo.forEach(t => stops.push({ cx: (t.x + t.px) / 2, cy: (t.y + t.py) / 2, w: 740, h: 520 }));
+
+    const overview = idx < 0;
+    const stop = overview ? { cx: CX, cy: CY, w: 2920, h: 2920 } : (stops[idx] || stops[0]);
+    const s = Math.min(vw / stop.w, vh / stop.h) * 0.96;
+    const cameraStyle = {
+      position: 'absolute', left: 0, top: 0, width: W + 'px', height: H + 'px', transformOrigin: '0 0',
+      transform: `translate(${(vw / 2 - stop.cx * s).toFixed(2)}px, ${(vh / 2 - stop.cy * s).toFixed(2)}px) scale(${s.toFixed(4)})`,
+      transition: `transform ${ms}ms ${ease}`
+    };
+
+    const caveUrl = this.sprite('cave-' + variant, () => caveTexture(p.rock, 130, 18, 7411));
+    const caveTop = { position: 'absolute', left: 0, top: 0, width: W + 'px', height: '230px', backgroundImage: `url(${caveUrl})`, backgroundSize: '100% 100%', imageRendering: 'pixelated', transform: 'scaleY(-1)' };
+    const caveBottom = { position: 'absolute', left: 0, top: (H - 260) + 'px', width: W + 'px', height: '260px', backgroundImage: `url(${caveUrl})`, backgroundSize: '100% 100%', imageRendering: 'pixelated' };
+
+    const ring = (r, op) => ({ position: 'absolute', left: (CX - r) + 'px', top: (CY - r) + 'px', width: (r * 2) + 'px', height: (r * 2) + 'px', borderRadius: '50%', border: '2px solid rgba(255,255,255,' + op + ')', pointerEvents: 'none' });
+    const ringInner = ring(R_GEM, 0.10);
+    const ringOuter = ring(R_STEP, 0.06);
+
+    const hero = this.sprite('hero', () => gemSprite(38, 54, 205, 0.115, 1.02, 7));
+    const heroWrap = { position: 'absolute', left: (CX - hero.w / 2) + 'px', top: (CY - hero.h / 2) + 'px', width: hero.w + 'px', height: hero.h + 'px', animation: 'bob 6s ease-in-out infinite', zIndex: 6 };
+    const heroSprite = { position: 'absolute', inset: 0, backgroundImage: `url(${hero.url})`, backgroundSize: '100% 100%', imageRendering: 'pixelated' };
+    const heroGlow = { position: 'absolute', left: (CX - 360) + 'px', top: (CY - 360) + 'px', width: '720px', height: '720px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(120,200,255,.30), rgba(120,200,255,0) 62%)', opacity: glowOn ? 1 : 0, pointerEvents: 'none' };
+
+    const spoke = (fromR, toR, a, color, op) => ({
+      position: 'absolute', left: CX + 'px', top: (CY - 2) + 'px', width: Math.max(0, toR - fromR) + 'px', height: '4px',
+      background: color, opacity: op, transformOrigin: '0 50%',
+      transform: `rotate(${a}deg) translateX(${fromR}px)`, transition: 'opacity 500ms ease', pointerEvents: 'none'
+    });
+
+    const steps = stepGeo.map(t => {
+      const active = idx === t.k + 1;
+      const accent = `oklch(0.74 ${t.s.chroma} ${t.s.hue})`;
+      const deep = `oklch(0.28 ${(t.s.chroma * 0.6).toFixed(3)} ${t.s.hue})`;
+      const NS = 64;
+      return {
+        num: t.s.num, title: t.s.title, body: t.s.body,
+        onClick: () => this.go(t.k + 1),
+        spoke: spoke(R_GEM + 90, R_STEP - NS / 2, t.a, accent, active ? 0.9 : (overview ? 0.5 : 0.2)),
+        nodeWrap: { position: 'absolute', left: (t.x - NS / 2) + 'px', top: (t.y - NS / 2) + 'px', width: NS + 'px', height: NS + 'px', cursor: 'pointer', background: active ? accent : deep, boxShadow: `0 0 0 5px ${active ? 'rgba(255,255,255,.85)' : accent}`, transition: 'background 400ms ease, box-shadow 400ms ease', zIndex: 8 },
+        nodeInner: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Press Start 2P', monospace", fontSize: '20px', color: active ? '#0a0818' : accent },
+        panel: { position: 'absolute', left: (t.px - STEP_PW / 2) + 'px', top: (t.py - STEP_PH / 2) + 'px', width: STEP_PW + 'px', minHeight: STEP_PH + 'px', padding: '20px 24px', background: 'rgba(6,6,18,.9)', boxShadow: `0 0 0 3px ${accent}, 0 0 0 7px rgba(6,6,18,.9)`, opacity: active ? 1 : (overview ? 1 : 0.2), zIndex: active ? 20 : 4, transition: `opacity ${Math.round(ms * 0.55)}ms ease` },
+        titleStyle: { fontFamily: "'Press Start 2P', monospace", fontSize: '21px', letterSpacing: '1px', color: accent, textShadow: '0 3px 0 rgba(0,0,0,.5)' }
+      };
+    });
+
+    const nodes = gemGeo.map(t => {
+      const sp = this.sprite('g-' + t.g.id, () => gemSprite(24, 34, t.g.hue, t.g.chroma, t.g.lift, 4));
+      const active = idx === STEPS.length + t.k + 1;
+      const accent = `oklch(${(0.74 * t.g.lift).toFixed(3)} ${t.g.chroma} ${t.g.hue})`;
+      return {
+        title: t.g.title, tag: t.g.tag, meta: t.g.meta, body: t.g.body,
+        onClick: () => this.go(STEPS.length + t.k + 1),
+        spoke: spoke(150, R_GEM - sp.h / 2, t.a, accent, active ? 0.75 : (overview ? 0.45 : 0.16)),
+        wrap: { position: 'absolute', left: (t.x - sp.w / 2) + 'px', top: (t.y - sp.h / 2) + 'px', width: sp.w + 'px', height: sp.h + 'px', cursor: 'pointer', animation: `bob ${5 + t.k * 0.4}s ease-in-out infinite`, zIndex: 7 },
+        glow: { position: 'absolute', left: (t.x - 150) + 'px', top: (t.y - 150) + 'px', width: '300px', height: '300px', borderRadius: '50%', background: `radial-gradient(circle, oklch(${(0.66 * t.g.lift).toFixed(3)} ${t.g.chroma} ${t.g.hue} / .34), transparent 64%)`, opacity: glowOn ? (active ? 1 : 0.6) : 0, transition: 'opacity 600ms ease', pointerEvents: 'none' },
+        sprite: { position: 'absolute', inset: 0, backgroundImage: `url(${sp.url})`, backgroundSize: '100% 100%', imageRendering: 'pixelated' },
+        label: { position: 'absolute', left: (t.x - 110) + 'px', top: (t.y + sp.h / 2 + 12) + 'px', width: '220px', textAlign: 'center', fontFamily: "'Press Start 2P', monospace", fontSize: '13px', letterSpacing: '1px', color: accent, opacity: (active || overview) ? 0 : 0.85, transition: 'opacity 400ms ease', pointerEvents: 'none' },
+        panel: { position: 'absolute', left: (t.px - GEM_PW / 2) + 'px', top: (t.py - GEM_PH / 2) + 'px', width: GEM_PW + 'px', minHeight: GEM_PH + 'px', padding: '18px 20px', background: 'rgba(6,6,18,.93)', boxShadow: `0 0 0 3px ${accent}, 0 0 0 7px rgba(6,6,18,.93)`, opacity: active ? 1 : (overview ? 0.92 : 0), zIndex: active ? 22 : 2, transition: `opacity ${Math.round(ms * 0.55)}ms ease`, pointerEvents: 'none' },
+        titleStyle: { fontFamily: "'Press Start 2P', monospace", fontSize: '21px', letterSpacing: '1px', color: accent, textShadow: '0 3px 0 rgba(0,0,0,.5)' }
+      };
+    });
+
+    const onCover = idx === 0;
+    const coverScrim = { position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(4,3,12,.97) 0%, rgba(4,3,12,.94) 46%, rgba(4,3,12,.55) 66%, rgba(4,3,12,0) 88%)', opacity: onCover ? 1 : 0, transition: `opacity ${Math.round(ms * 0.7)}ms ease`, pointerEvents: 'none', zIndex: 41 };
+    const coverCard = { position: 'absolute', left: '6%', width: '52%', top: '50%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', opacity: onCover ? 1 : 0, transform: onCover ? 'translateY(-50%)' : 'translateY(calc(-50% + 24px))', transition: `opacity ${Math.round(ms * 0.7)}ms ease, transform ${Math.round(ms * 0.7)}ms ease`, pointerEvents: 'none', zIndex: 42 };
+
+    const hudItems = STEPS.map((st, k) => ({ i: k + 1, color: `oklch(0.74 ${st.chroma} ${st.hue})`, shape: 'square' }))
+      .concat(GEMS.map((g, k) => ({ i: STEPS.length + k + 1, color: `oklch(${(0.74 * g.lift).toFixed(3)} ${g.chroma} ${g.hue})`, shape: 'gem' })));
+    const hud = hudItems.map(it => {
+      const on = this.state.visited.indexOf(it.i) >= 0;
+      const active = idx === it.i;
+      return {
+        onClick: () => this.go(it.i),
+        dot: { width: '15px', height: '15px', cursor: 'pointer',
+          transform: (it.shape === 'gem' ? 'rotate(45deg)' : 'none') + ' scale(' + (active ? 1.4 : 1) + ')',
+          background: on ? it.color : 'rgba(255,255,255,.09)',
+          boxShadow: `0 0 0 3px ${active ? 'rgba(255,255,255,.85)' : 'rgba(0,0,0,.55)'}`,
+          transition: 'all 300ms ease' }
+      };
+    });
+    const hudStyle = { position: 'absolute', left: '22px', bottom: '26px', display: 'flex', gap: '13px', alignItems: 'center', zIndex: 45, opacity: ((this.props.showHud ?? true) && !onCover) ? 1 : 0, transition: 'opacity 500ms ease' };
+
+    const variants = Object.keys(PALETTES).map(key => ({
+      label: PALETTES[key].label,
+      onClick: () => this.setState({ variant: key }),
+      btn: { fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', padding: '9px 13px', cursor: 'pointer',
+        background: key === variant ? 'rgba(255,255,255,.92)' : 'rgba(255,255,255,.06)',
+        color: key === variant ? '#0a0818' : 'rgba(255,255,255,.72)',
+        boxShadow: '0 0 0 2px rgba(255,255,255,.20)' }
+    }));
+
+    return {
+      rootRef: this.rootRef,
+      toggleOverview: () => this.setState(st => ({ idx: st.idx < 0 ? 0 : -1 })),
+      zoomOutLabel: overview ? '⤢  ENTRAR' : '⤡  VISÃO GERAL',
+      zoomOutBtn: { position: 'absolute', left: '22px', top: '22px', zIndex: 46, cursor: 'pointer',
+        fontFamily: "'Press Start 2P', monospace", fontSize: '11px', letterSpacing: '1px', padding: '12px 15px',
+        background: overview ? 'rgba(255,255,255,.92)' : 'rgba(6,6,18,.8)',
+        color: overview ? '#0a0818' : 'rgba(255,255,255,.85)',
+        boxShadow: '0 0 0 3px rgba(255,255,255,.22)' },
+      bgStyle: { position: 'absolute', inset: 0, background: `radial-gradient(110% 90% at 50% 50%, ${p.halo}, ${p.bgBot} 50%, ${p.bgTop})`, transition: 'background 700ms ease' },
+      cameraStyle, caveTop, caveBottom, ringInner, ringOuter, heroWrap, heroSprite, heroGlow,
+      steps, nodes, coverScrim, coverCard, hud, hudStyle, variants
+    };
+  }
+}
+</script>
+</body>
+</html>
