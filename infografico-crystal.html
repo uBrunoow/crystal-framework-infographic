@@ -1,0 +1,616 @@
+<meta charset="utf-8">
+<title>Mapa da Metodologia Crystal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============ TOKENS ============
+   Direção: mapa noturno de RPG 16-bit. Tema único e deliberado (escuro),
+   pintado explicitamente para não herdar o fundo do visualizador.        */
+:root{
+  --void:#05040e; --night:#0a0820; --panel:#140f33;
+  --ink:#e9e6ff; --ink-dim:#b3accf; --ink-faint:#7d76a8;
+  --gold:#f5c542; --gold-d:#a67c14;
+  --c1:#a86bff; --c2:#4d8bff; --c3:#4ade80; --c4:#ff9f45; --c5:#e07bff; --c6:#45e0d5;
+  --px:'Press Start 2P',ui-monospace,monospace;   /* só ASCII: sem acentos */
+  --lb:'Silkscreen',ui-monospace,monospace;       /* pixel COM acentuação  */
+  --bd:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--void);color:var(--ink)}
+body{font-family:var(--bd);-webkit-font-smoothing:antialiased}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+
+.stage{width:100%;overflow:hidden;display:flex;justify-content:center;
+  background:radial-gradient(120% 60% at 50% 0%, #14103a 0%, #07061a 55%, #04030c 100%)}
+.scaler{transform-origin:top center}
+
+.poster{
+  position:relative;width:1080px;height:1920px;padding:30px 28px 22px;
+  display:flex;flex-direction:column;gap:20px;overflow:hidden;
+  background:
+    radial-gradient(58% 30% at 50% 50%, rgba(130,80,240,.22) 0%, rgba(130,80,240,0) 65%),
+    radial-gradient(130% 55% at 50% 0%, #191142 0%, #0b0824 46%, #05040e 100%);
+  box-shadow:0 0 0 4px #2b2266, 0 0 0 8px #0a0720;
+}
+.bglayer{position:absolute;inset:0;pointer-events:none}
+#stars{z-index:0}
+#scenery{position:absolute;left:0;bottom:0;width:1080px;height:132px;z-index:1;opacity:.95}
+.scan{z-index:70;background:repeating-linear-gradient(0deg, rgba(0,0,0,.20) 0 2px, rgba(0,0,0,0) 2px 4px);opacity:.42}
+
+/* ============ CABEÇALHO ============ */
+.plaque{position:relative;z-index:5;padding:20px 24px 16px;text-align:center;
+  background:linear-gradient(180deg,#231a58 0%,#130d34 100%);
+  box-shadow:0 0 0 4px var(--gold-d), 0 0 0 8px #0d0926, 0 0 0 11px var(--gold-d),
+             inset 0 0 0 2px rgba(255,255,255,.07), 0 0 70px rgba(124,74,236,.30)}
+.corner{position:absolute;width:14px;height:14px;background:var(--gold);box-shadow:0 0 0 3px #0d0926}
+.corner.tl{left:-4px;top:-4px} .corner.tr{right:-4px;top:-4px}
+.corner.bl{left:-4px;bottom:-4px} .corner.br{right:-4px;bottom:-4px}
+.plaque-inner{display:flex;align-items:center;justify-content:center;gap:24px}
+.title{margin:0;font-family:var(--px);font-size:80px;line-height:1;letter-spacing:2px;color:#fff;
+  text-shadow:0 5px 0 #4a2fa8, 0 10px 0 #2a1b64, 0 0 26px rgba(170,120,255,.85), 0 0 64px rgba(90,220,255,.32)}
+.subtitle{margin:14px 0 0;font-family:var(--lb);font-weight:700;font-size:23px;letter-spacing:2px;color:#cfc4ff}
+.pillars{margin-top:15px;padding:10px 0;font-family:var(--lb);font-weight:700;font-size:20px;letter-spacing:2.5px;color:#2a1d02;
+  background:linear-gradient(180deg,#ffe08a,#f5c542 55%,#d9a41f);
+  box-shadow:0 0 0 3px #0d0926, inset 0 -3px 0 rgba(0,0,0,.18)}
+.pillars i{font-style:normal;color:#8a6a12;padding:0 10px}
+
+/* ============ ÁRVORE ============ */
+.tree{position:relative;z-index:5;flex:1;display:grid;
+  grid-template-columns:384px 228px 384px;grid-template-rows:1fr 1fr 1fr;gap:16px 8px}
+#wires{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible}
+.gemnode{position:absolute;z-index:2;transform:translate(-50%,-50%)}
+
+/* ---- painel estilo janela de RPG ---- */
+.card{position:relative;z-index:3;display:flex;flex-direction:column;gap:11px;padding:15px 17px;
+  background:linear-gradient(180deg, rgba(24,18,56,.97) 0%, rgba(13,10,36,.97) 100%);
+  box-shadow:0 0 0 3px var(--k), 0 0 0 6px #08061c, 0 0 0 8px rgba(255,255,255,.06),
+             0 0 40px -8px var(--k), inset 0 0 44px -14px var(--k)}
+.card::after{content:"";position:absolute;right:-3px;top:-3px;width:18px;height:18px;background:var(--k);
+  clip-path:polygon(100% 0,0 0,100% 100%)}
+.card-head{display:flex;align-items:center;gap:13px}
+.num{font-family:var(--px);font-size:21px;line-height:1;color:#fff;padding:10px 10px 8px;
+  background:linear-gradient(180deg, var(--k), rgba(0,0,0,.45));
+  text-shadow:0 3px 0 rgba(0,0,0,.55);
+  box-shadow:0 0 0 3px #08061c, inset 0 0 0 2px rgba(255,255,255,.35), 0 0 18px -3px var(--k)}
+.card-title{margin:0;font-family:var(--lb);font-weight:700;font-size:26px;line-height:1.15;letter-spacing:1.5px;
+  color:var(--k);text-shadow:0 3px 0 rgba(0,0,0,.5);text-wrap:balance}
+.rule{height:3px;background:linear-gradient(90deg,var(--k),rgba(255,255,255,.04) 92%)}
+.body{margin:0;font-size:16px;line-height:1.6;color:#d9d4f7;text-wrap:pretty}
+.body strong{color:#fff;font-weight:700}
+.fill{flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px}
+
+/* faixa de destaque (contorno, não bloco chapado) */
+.stamp{padding:9px 12px;font-family:var(--lb);font-weight:700;font-size:17px;letter-spacing:1px;line-height:1.4;
+  color:var(--k);background:rgba(255,255,255,.045);box-shadow:inset 0 0 0 2px var(--k)}
+.quote{padding:10px 12px;font-size:15px;line-height:1.5;color:#fff;
+  background:rgba(255,255,255,.045);box-shadow:inset 0 0 0 2px var(--k)}
+.quote::before{content:"“"} .quote::after{content:"”"}
+
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:13px}
+.row b{display:block;font-family:var(--lb);font-weight:700;font-size:19px;letter-spacing:.8px;color:#fff}
+.row small{display:block;font-size:13.5px;color:var(--ink-dim);margin-top:2px}
+.icobox{display:flex;align-items:center;justify-content:center;width:46px;height:46px;flex:0 0 46px;
+  background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.iconrow{display:flex;gap:14px;align-items:flex-end;justify-content:center}
+.crew{display:flex;gap:16px;align-items:flex-end;justify-content:center}
+.roleart{display:flex;flex-direction:column;align-items:center;gap:6px;width:66px}
+.roleart span{font-family:var(--lb);font-size:12px;letter-spacing:0;color:#e6e1ff;text-align:center;line-height:1.3;overflow-wrap:anywhere}
+
+/* ---- ciclo de vida ---- */
+.cycle{position:relative;width:100%;height:280px}
+.cycle svg{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;width:100px}
+.node span{font-family:var(--lb);font-size:15px;letter-spacing:.5px;color:#cdf6dd;text-shadow:0 2px 0 #05130b}
+.cycle-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
+.cycle-core span{font-family:var(--lb);font-weight:700;font-size:14px;color:#9cf7c0;letter-spacing:1px}
+
+/* ---- cristal central ---- */
+.core{grid-column:2;grid-row:1 / span 3;position:relative;z-index:4;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.core-glow{position:absolute;width:330px;height:330px;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(155,105,255,.45) 0%, rgba(80,200,255,.18) 40%, rgba(0,0,0,0) 70%);
+  animation:pulse 5s ease-in-out infinite}
+.rune{position:absolute;left:50%;top:50%;width:300px;height:300px;transform:translate(-50%,-50%);
+  border:3px dashed rgba(150,110,255,.22);border-radius:50%;animation:spin 60s linear infinite}
+.rune.b{width:230px;height:230px;border-style:dotted;border-color:rgba(90,220,255,.20);animation-direction:reverse}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.cluster{position:relative;display:flex;align-items:flex-end;justify-content:center;animation:bob 5.5s ease-in-out infinite}
+.cluster .side{margin:0 -18px 26px;z-index:0;opacity:.95}
+.cluster .mid{position:relative;z-index:1}
+.gembase{margin-top:-10px;position:relative;z-index:2}
+#sparks{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.core-label{position:relative;font-family:var(--px);font-size:13px;letter-spacing:2px;color:#fff;padding:9px 11px;
+  background:#170f42;box-shadow:0 0 0 3px #7d54ec, 0 0 0 6px #08061c, 0 0 28px rgba(140,90,255,.55)}
+.core-sub{position:relative;font-family:var(--lb);font-weight:700;font-size:15px;letter-spacing:1.5px;color:#9ad9ff;text-align:center}
+
+/* ============ RODAPÉ ============ */
+.ground{position:relative;z-index:4;height:106px;flex:0 0 106px}
+.foot{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 16px;
+  background:rgba(9,7,28,.8);box-shadow:0 0 0 3px #2b2266, inset 0 0 0 1px rgba(255,255,255,.05)}
+.foot-l{display:flex;align-items:center;gap:12px;font-family:var(--lb);font-weight:700;font-size:17px;letter-spacing:1.2px;color:#c2bbee}
+.foot-r{font-family:var(--lb);font-size:16px;letter-spacing:1.2px;color:var(--ink-faint)}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+
+<div class="stage">
+ <div class="scaler" id="scaler">
+  <div class="poster" id="poster">
+    <canvas class="bglayer" id="stars" width="1080" height="1920"></canvas>
+    
+    <div class="bglayer scan"></div>
+
+    <!-- ======== CABEÇALHO ======== -->
+    <header class="plaque">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="plaque-inner">
+        <span data-spr="gemSmall" data-scale="5"></span>
+        <h1 class="title">CRYSTAL</h1>
+        <span data-spr="gemSmall" data-scale="5"></span>
+      </div>
+      <p class="subtitle">METODOLOGIA ÁGIL DE DESENVOLVIMENTO DE SOFTWARE</p>
+      <div class="pillars">PESSOAS<i>✦</i>COMUNICAÇÃO<i>✦</i>ADAPTAÇÃO<i>✦</i>ENTREGA FREQUENTE</div>
+    </header>
+
+    <!-- ======== ÁRVORE DE CONHECIMENTO ======== -->
+    <main class="tree" id="tree">
+      <svg id="wires" preserveAspectRatio="none"></svg>
+
+      <!-- 01 -->
+      <section class="card" id="p1" style="--k:var(--c1)">
+        <div class="card-head"><div class="num">01</div><h2 class="card-title">FOCO DA METODOLOGIA</h2></div>
+        <div class="rule"></div>
+        <p class="body">Crystal é uma <strong>família de metodologias ágeis</strong> focada em pessoas, comunicação, colaboração e adaptação do processo às características do projeto.</p>
+        <div class="fill">
+          <div class="iconrow">
+            <span class="icobox" data-spr="target" data-scale="3"></span>
+            <span class="icobox" data-spr="chat" data-scale="3.4"></span>
+            <span class="icobox" data-spr="people" data-scale="2.6"></span>
+          </div>
+          <div class="crew">
+            <span data-spr="hero" data-scale="3.4" data-swap="A:#5a3fb0,Z:#7a52d8,X:#c9a9ff"></span>
+            <span data-spr="hero" data-scale="3.4" data-swap="A:#8a4a2a,Z:#3e7fd8,X:#9fd0ff"></span>
+            <span data-spr="hero" data-scale="3.4" data-swap="A:#b8892f,Z:#2f8f60,X:#b6ffd8"></span>
+            <span data-spr="hero" data-scale="3.4" data-swap="A:#2a2038,Z:#b04ac0,X:#ffc4f2"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="card" id="p2" style="--k:var(--c2)">
+        <div class="card-head"><div class="num">02</div><h2 class="card-title">ORIGEM</h2></div>
+        <div class="rule"></div>
+        <div style="display:flex;gap:16px;align-items:flex-start">
+          <p class="body" style="flex:1">Desenvolvida por <strong>Alistair Cockburn</strong>, um dos signatários do Manifesto Ágil, a partir de estudos sobre equipes e projetos de desenvolvimento de software.</p>
+        </div>
+        <div class="fill" style="align-items:center;justify-content:center">
+          <span data-spr="mage" data-scale="7"></span>
+        </div>
+        <div class="stamp">PERÍODO: DÉCADA DE 1990</div>
+      </section>
+
+      <!-- 03 -->
+      <section class="card" id="p3" style="--k:var(--c3)">
+        <div class="card-head"><div class="num">03</div><h2 class="card-title">CICLO DE VIDA</h2></div>
+        <div class="rule"></div>
+        <div class="cycle" id="cycle">
+          <svg viewBox="0 0 350 280" id="cycleSvg"></svg>
+          <div class="cycle-core">
+            <span data-spr="gemTiny" data-scale="3.4"></span>
+          </div>
+        </div>
+        <div class="stamp">DESENVOLVIMENTO ITERATIVO E INCREMENTAL</div>
+      </section>
+
+      <!-- 04 -->
+      <section class="card" id="p4" style="--k:var(--c4)">
+        <div class="card-head"><div class="num">04</div><h2 class="card-title">ARTEFATOS</h2></div>
+        <div class="rule"></div>
+        <div class="rows fill">
+          <div class="row"><span class="icobox" data-spr="scroll" data-scale="3"></span><span><b>REQUISITOS</b></span></div>
+          <div class="row"><span class="icobox" data-spr="check" data-scale="3"></span><span><b>PLANEJAMENTO</b></span></div>
+          <div class="row"><span class="icobox" data-spr="code" data-scale="3"></span><span><b>CÓDIGO-FONTE</b></span></div>
+          <div class="row"><span class="icobox" data-spr="flask" data-scale="3"></span><span><b>TESTES</b></span></div>
+          <div class="row"><span class="icobox" data-spr="box" data-scale="3"></span><span><b>INCREMENTOS</b><small>versões funcionais</small></span></div>
+        </div>
+        <div class="quote">A documentação é adaptada às necessidades do projeto.</div>
+      </section>
+
+      <!-- 05 -->
+      <section class="card" id="p5" style="--k:var(--c5)">
+        <div class="card-head"><div class="num">05</div><h2 class="card-title">PAPÉIS</h2></div>
+        <div class="rule"></div>
+        <div class="fill">
+          <div class="rows">
+            <div class="row"><span class="icobox" data-spr="king" data-scale="2.8"></span><span><b>STAKEHOLDERS</b></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#6f4ae0,Z:#8a5ff0,X:#f5c542"></span><span><b>LÍDER / COORDENADOR</b></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#2a5aa8,Z:#3e7fd8,X:#9fd0ff"></span><span><b>DESENVOLVEDORES</b></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#2f6b46,Z:#3aa06a,X:#b6ffd8"></span><span><b>TESTADORES</b></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#7a2f6b,Z:#b04ac0,X:#ffc4f2"></span><span><b>USUÁRIOS / CLIENTES</b></span></div>
+          </div>
+          <div class="iconrow"><span class="icobox" data-spr="chat" data-scale="3.4"></span><span class="icobox" data-spr="people" data-scale="3"></span></div>
+        </div>
+        <div class="quote">Comunicação e colaboração são essenciais.</div>
+      </section>
+
+      <!-- 06 -->
+      <section class="card" id="p6" style="--k:var(--c6)">
+        <div class="card-head"><div class="num">06</div><h2 class="card-title">REFERÊNCIAS</h2></div>
+        <div class="rule"></div>
+        <div class="fill">
+          <div style="display:flex;gap:16px;align-items:center">
+            <span data-spr="book" data-scale="5" style="flex:0 0 auto"></span>
+            <p class="body" style="flex:1"><strong>Alistair Cockburn</strong><br>Crystal Clear: A Human-Powered Methodology for Small Teams <strong>(2004)</strong></p>
+          </div>
+        </div>
+        <div class="stamp">CONSULTAR TAMBÉM DOCUMENTAÇÕES E MATERIAIS OFICIAIS SOBRE A METODOLOGIA CRYSTAL</div>
+
+      </section>
+
+      <!-- CRISTAL CENTRAL -->
+      <div class="core" id="core">
+        <div class="core-glow"></div>
+        <div class="rune"></div><div class="rune b"></div>
+        <canvas id="sparks" width="320" height="480"></canvas>
+        <div class="cluster">
+          <span class="side" data-spr="gemSide" data-scale="5"></span>
+          <span class="mid" data-spr="gem" data-scale="7"></span>
+          <span class="side" data-spr="gemSide" data-scale="5"></span>
+        </div>
+        <div class="core-label">CRYSTAL</div>
+        <div class="core-sub">NÚCLEO DA<br>METODOLOGIA</div>
+      </div>
+    </main>
+
+    <div class="ground"><canvas id="scenery" width="1080" height="132"></canvas></div>
+
+    <!-- ======== RODAPÉ ======== -->
+    <footer class="foot">
+      <div class="foot-l"><span data-spr="gemTiny" data-scale="3"></span> SEIS ÁREAS PARA EXPLORAR A METODOLOGIA CRYSTAL</div>
+      <div class="foot-r">INFOGRÁFICO ACADÊMICO</div>
+    </footer>
+  </div>
+ </div>
+</div>
+
+<script>
+/* ============================================================
+   MOTOR DE PIXEL ART — cada sprite é um mapa de caracteres
+   ============================================================ */
+const PAL = {
+  K:'#100a22', D:'#1a1440', S:'#8a8fb5', s:'#565b7e',
+  W:'#ffffff', w:'#cfd8f5',
+  P:'#6f4ae0', p:'#a884ff', q:'#d9c8ff',
+  B:'#2f5fd0', b:'#6fa4ff',
+  C:'#28c8e0', c:'#8df0ff',
+  G:'#f5c542', g:'#ffe6a3',
+  E:'#33a862', e:'#7cf0a6',
+  O:'#ff9f45', V:'#c85ce0', R:'#e05a5a',
+  T:'#6b4526', t:'#a3703c', F:'#f0c09a',
+  A:'#5a3fb0', Z:'#7a52d8', X:'#c9a9ff'   /* trocáveis por data-swap */
+};
+
+const SPRITES = {
+  target:[
+    "....KKKKKK....","..KKWWWWWWKK..",".KWWRRRRRRWWK.","KWWRRWWWWRRWWK",
+    "KWRRWWRRWWRRWK","KWRWWRRRRWWRWK","KWRWRRWWRRWRWK","KWRWRRWWRRWRWK",
+    "KWRWWRRRRWWRWK","KWRRWWRRWWRRWK","KWWRRWWWWRRWWK",".KWWRRRRRRWWK.",
+    "..KKWWWWWWKK..","....KKKKKK...."],
+  chat:[
+    ".KKKKKKKKKK.","KWWWWWWWWWWK","KWKKKKWKKKWK","KWWWWWWWWWWK","KWKKKKKKKWWK",
+    "KWWWWWWWWWWK","KWKKKKKWWWWK","KWWWWWWWWWWK","KKKWWKKKKKKK","...KKK......"],
+  people:[
+    "..AA....AA....AA..",".AAAA..AAAA..AAAA.",".AFFA..AFFA..AFFA.",
+    ".AKFA..AKFA..AKFA.","..FF....FF....FF..",".ZZZZ..ZZZZ..ZZZZ.",
+    "FZXXZFFZXXZFFZXXZF",".ZZZZ..ZZZZ..ZZZZ.",".Z..Z..Z..Z..Z..Z.",".K..K..K..K..K..K."],
+  scroll:[
+    ".TTTTTTTTTT.","TttggggggttT","TtgKKKKKKgtT","TtggggggggtT","TtgKKKKKKgtT",
+    "TtggggggggtT","TtgKKKKgggtT","TtggggggggtT","TtgKKKKKKgtT","TtggggggggtT",
+    "TttggggggttT",".TTTTTTTTTT."],
+  check:[
+    "KKKKKKKKKKKK","KwwwwwwwwwwK","KwEEwKKKKKwK","KwEEwKKKKKwK","KwwwwwwwwwwK",
+    "KwEEwKKKKKwK","KwEEwKKKKKwK","KwwwwwwwwwwK","KwsswKKKKKwK","KwsswKKKKKwK",
+    "KwwwwwwwwwwK","KKKKKKKKKKKK"],
+  code:[
+    "KKKKKKKKKKKK","KDDDDDDDDDDK","KDDcDDDDcDDK","KDcDDDDDDcDK","KcDDDeeDDDcK",
+    "KcDDeeDDDDcK","KDcDDDDDDcDK","KDDcDDDDcDDK","KDDDDDDDDDDK","KDDeeeeDDDDK",
+    "KDDDDDDDDDDK","KKKKKKKKKKKK"],
+  flask:[
+    "..KKKKKK..","..KWWWWK..","..KWssWK..","..KWssWK..",".KWssssWK.",".KWCCCCWK.",
+    "KWCCccCCWK","KWCcCCcCWK","KWCCCCCCWK","KWCCCCCCWK",".KWWWWWWK.","..KKKKKK.."],
+  box:[
+    ".TTTTTTTTTT.","TttttttttttT","TtGGtttttGGT","TttttttttttT","TTTTTTTTTTTT",
+    "TttttGGttttT","TttttGGttttT","TttttGGttttT","TttttGGttttT","TttttGGttttT",
+    "TttttGGttttT",".TTTTTTTTTT."],
+  gear:[
+    "...SS..SS...",".SSSSSSSSSS.",".SsssssssssS","SSss....ssSS","SSs......sSS",
+    "SSs......sSS","SSs......sSS","SSs......sSS","SSss....ssSS",".SsssssssssS",
+    ".SSSSSSSSSS.","...SS..SS..."],
+  loop:[
+    "...CCCCCC...",".CCcccccCCC.","CCc......cCC","Cc........cC","Cc.........C",
+    "Cc..........","Cc..........","Cc.........C","Cc........cC","CCc......cCC",
+    ".CCcccccCC.C","...CCCCCC.CC"],
+  book:[
+    "..TTTTTTTTTTTT..",".TttttttttttttT.",".TtGGGGGGGGGGtT.",".Ttg........gtT.",
+    ".Ttg...qq...gtT.",".Ttg..qppq..gtT.",".Ttg..pPPp..gtT.",".Ttg...PP...gtT.",
+    ".Ttg........gtT.",".TtGGGGGGGGGGtT.",".TttttttttttttT.","..TTTTTTTTTTTT.."],
+  hero:[
+    "..AAAAAA..",".AAAAAAAA.",".AFFFFFFA.",".AFKFFKFA.",".AFFFFFFA.","..FFKKFF..",
+    "..FFFFFF..",".ZZZZZZZZ.","FZZXXXXZZF","FZZXXXXZZF",".ZZZZZZZZ.",".ZZ....ZZ.",
+    ".KK....KK.",".KK....KK."],
+  king:[
+    ".G.G.G.G..",".GGGGGGG..","..WWWWWW..",".WFFFFFFW.",".WFKFFKFW.","..FFFFFF..",
+    "..FWWWWF..",".BBBWWBBB.","BBBBWWBBBB","BBBGGGGBBB",".BBBBBBBB.",".BBBBBBBB.",
+    "..KK..KK..","..KK..KK.."],
+  mage:[
+    "....pp....","...pppp...","..pqqqpp..",".pppppppp.","pppppqpppp",".pFFFFFFp.",
+    ".pFKFFKFp.","..FFFFFF..","..WWWWWW..",".PPWWWWPP.","PPPPWWPPPP","PPPPPPPPPP",
+    ".PPPPPPPP.","..KK..KK.."]
+};
+
+/* ---- cristal procedural: bipirâmide hexagonal facetada ---- */
+function gemRows(H, maxHW){
+  const rows=[], W=maxHW*2+2, cx=maxHW+1;
+  const yA=Math.round(H*0.34), yB=Math.round(H*0.66);
+  for(let y=0;y<H;y++){
+    let hw = y<yA ? 1+(maxHW-1)*(y/yA)
+           : y<yB ? maxHW
+                  : maxHW-(maxHW-1.2)*((y-yB)/(H-1-yB));
+    hw = Math.max(1, Math.round(hw));
+    let line='';
+    for(let x=0;x<W;x++){
+      const d=x-cx;
+      if(Math.abs(d)>hw){ line+='.'; continue; }
+      if(Math.abs(d)===hw||y===0||y===H-1){ line+='K'; continue; }
+      const t=d/hw;
+      let ch = t<-0.45?'q' : t<0.10?'p' : t<0.62?'P' : 'A';
+      if(y===yA||y===yB) ch = t<-0.45?'p':'A';
+      const hy=Math.round(H*0.40), hx=-Math.round(hw*0.55);
+      if(y>=hy&&y<=hy+3&&d>=hx&&d<=hx+1) ch='W';
+      if(y===hy+4&&d===hx) ch='q';
+      if(y>=Math.round(H*0.50)&&y<=Math.round(H*0.56)&&Math.abs(d)<=1) ch='c';
+      line+=ch;
+    }
+    rows.push(line);
+  }
+  return rows;
+}
+SPRITES.gem      = gemRows(40,13);
+SPRITES.gemSide  = gemRows(26,7);
+SPRITES.gemSmall = gemRows(16,5);
+SPRITES.gemTiny  = gemRows(11,3);
+SPRITES.base = [
+  "...ssssssssssssssss...","..sSSSSSSSSSSSSSSSSs..",".sSSSSSSSSSSSSSSSSSSs.",
+  "sSSsSSSSsSSSSsSSSSsSSs","sSSSSSSSSSSSSSSSSSSSSs",".ssssssssssssssssssss.",
+  "..ssssssssssssssssss.."];
+
+function makeCanvas(rows, scale, swap){
+  const h=rows.length, w=Math.max(...rows.map(r=>r.length));
+  const cv=document.createElement('canvas');
+  cv.width=Math.round(w*scale); cv.height=Math.round(h*scale);
+  const g=cv.getContext('2d');
+  for(let y=0;y<h;y++){
+    for(let x=0;x<rows[y].length;x++){
+      const ch=rows[y][x];
+      if(ch==='.'||ch===' ') continue;
+      const col=(swap&&swap[ch])||PAL[ch];
+      if(!col) continue;
+      g.fillStyle=col;
+      g.fillRect(Math.round(x*scale), Math.round(y*scale), Math.ceil(scale), Math.ceil(scale));
+    }
+  }
+  return cv;
+}
+
+document.querySelectorAll('[data-spr]').forEach(el=>{
+  const rows=SPRITES[el.dataset.spr]; if(!rows) return;
+  let swap=null;
+  if(el.dataset.swap){ swap={}; el.dataset.swap.split(',').forEach(p=>{const [k,v]=p.split(':');swap[k.trim()]=v.trim();}); }
+  el.appendChild(makeCanvas(rows, parseFloat(el.dataset.scale||'3'), swap));
+});
+
+/* base de pedra sob o cristal maior */
+(function(){
+  const cl=document.querySelector('.cluster'); if(!cl) return;
+  const base=makeCanvas(SPRITES.base, 7);
+  base.className='gembase';
+  cl.parentNode.insertBefore(base, cl.nextSibling);
+})();
+
+/* ============================================================
+   CÉU ESTRELADO
+   ============================================================ */
+(function(){
+  const g=document.getElementById('stars').getContext('2d');
+  let seed=20040; const rnd=()=> (seed=(seed*1103515245+12345)&0x7fffffff)/0x7fffffff;
+  for(let i=0;i<420;i++){
+    const x=Math.round(rnd()*1080), y=Math.round(rnd()*1920), r=rnd();
+    const s=r>0.94?3:(r>0.7?2:1);
+    g.fillStyle = r>0.9?'rgba(180,235,255,.95)':(r>0.55?'rgba(200,180,255,.5)':'rgba(255,255,255,.26)');
+    g.fillRect(x,y,s,s);
+  }
+})();
+
+/* ============================================================
+   CENÁRIO PIXEL ART — faixa de horizonte: castelo, floresta e portal
+   ============================================================ */
+(function(){
+  const cv=document.getElementById('scenery'), g=cv.getContext('2d');
+  const P=3, px=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(x*P,y*P,w*P,h*P);};
+  const GY=40;                    /* linha do chão, em unidades de P */
+
+  /* montanhas distantes */
+  [[40,26,72],[104,18,48],[250,30,84],[318,20,52]].forEach(([mx,mh,mw])=>{
+    for(let i=0;i<mh;i++){
+      const w=Math.max(1,Math.round(mw*(i/mh)));
+      px(mx-(w>>1), GY-mh+i, w, 1, i<3?'#3b3470':'#1b1742');
+    }
+  });
+
+  /* castelo à esquerda */
+  const tower=(x,w,h)=>{
+    px(x, GY-h, w, h, '#191343');
+    for(let i=0;i<w;i+=3) px(x+i, GY-h-2, 2, 2, '#191343');
+    for(let y=GY-h+4;y<GY-3;y+=5)
+      for(let i=2;i<w-2;i+=5) px(x+i, y, 2, 2, 'rgba(245,197,66,.65)');
+  };
+  tower(18,9,30); tower(52,9,30); tower(32,18,22);
+  px(36,GY-30,2,8,'#191343'); px(36,GY-30,7,4,'rgba(170,120,255,.8)');
+  px(12,GY-9,66,9,'#151138');
+  for(let i=0;i<66;i+=5) px(12+i, GY-11, 3, 2, '#151138');
+
+  /* floresta nas bordas */
+  const tree=(x,s)=>{
+    px(x, GY-3*s, 2, 3*s, '#3b2a18');
+    for(let i=0;i<4;i++) px(x-(3-i)-1, GY-3*s-i*2-2, 4+(3-i)*2, 3, i%2?'#1c5236':'#226b46');
+  };
+  [2,9,86,94,102,110,286,296,306,330,340,350,357].forEach((x,i)=> tree(x, 2+(i%2)));
+
+  /* portal de cristal e escadaria ao centro */
+  const sx=180;
+  px(sx-7, GY-24, 14, 24, '#1d1747');
+  px(sx-5, GY-20, 10, 20, 'rgba(90,220,255,.30)');
+  px(sx-2, GY-16, 4, 8, 'rgba(190,230,255,.75)');
+  for(let i=0;i<3;i++) px(sx-9-i*3, GY+i*2, 18+i*6, 2, i%2?'#2a2450':'#231e45');
+  [[sx-13,GY-7],[sx+11,GY-7]].forEach(([tx,ty])=>{
+    px(tx,ty,2,7,'#3b2a18'); px(tx-1,ty-4,4,4,'rgba(245,197,66,.9)'); px(tx,ty-6,2,3,'rgba(255,244,196,.95)');
+  });
+
+  /* chão */
+  px(0, GY, 360, 1, 'rgba(130,100,230,.30)');
+  px(0, GY+1, 360, 3, 'rgba(10,8,30,.6)');
+})();
+
+/* ============================================================
+   PARTÍCULAS DO CRISTAL
+   ============================================================ */
+(function(){
+  const cv=document.getElementById('sparks'), g=cv.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parts=Array.from({length:30},(_,i)=>({
+    x:Math.random()*cv.width, y:Math.random()*cv.height,
+    s:Math.random()>0.7?3:2, v:0.12+Math.random()*0.35,
+    c:['rgba(200,170,255,.9)','rgba(140,240,255,.85)','rgba(255,255,255,.7)'][i%3]}));
+  (function frame(){
+    g.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{
+      g.fillStyle=p.c; g.fillRect(Math.round(p.x),Math.round(p.y),p.s,p.s);
+      if(!reduce){ p.y-=p.v; if(p.y<-4){ p.y=cv.height+4; p.x=Math.random()*cv.width; } }
+    });
+    if(!reduce) requestAnimationFrame(frame);
+  })();
+})();
+
+/* ============================================================
+   CICLO DE VIDA — fluxograma circular
+   ============================================================ */
+(function(){
+  const wrap=document.getElementById('cycle'), svg=document.getElementById('cycleSvg');
+  const steps=[['PLANEJAR','scroll'],['DESENVOLVER','code'],['ENTREGAR','box'],
+               ['FEEDBACK','chat'],['ADAPTAR','gear'],['REPETIR','loop']];
+  const CX=175, CY=138, R=104, NS='http://www.w3.org/2000/svg';
+  const ring=document.createElementNS(NS,'circle');
+  ring.setAttribute('cx',CX); ring.setAttribute('cy',CY); ring.setAttribute('r',R);
+  ring.setAttribute('fill','none'); ring.setAttribute('stroke','#4ade80');
+  ring.setAttribute('stroke-width','3'); ring.setAttribute('stroke-dasharray','3 8');
+  ring.setAttribute('opacity','.5'); svg.appendChild(ring);
+
+  steps.forEach(([label,spr],i)=>{
+    const a=-Math.PI/2+i*(Math.PI/3);
+    const x=CX+R*Math.cos(a), y=CY+R*Math.sin(a);
+    const am=a+Math.PI/6, ax=CX+R*Math.cos(am), ay=CY+R*Math.sin(am), dir=am+Math.PI/2, L=8;
+    const tri=document.createElementNS(NS,'path');
+    tri.setAttribute('d',`M ${ax+Math.cos(dir)*L} ${ay+Math.sin(dir)*L} L ${ax+Math.cos(dir+2.4)*L} ${ay+Math.sin(dir+2.4)*L} L ${ax+Math.cos(dir-2.4)*L} ${ay+Math.sin(dir-2.4)*L} Z`);
+    tri.setAttribute('fill','#4ade80'); svg.appendChild(tri);
+
+    const n=document.createElement('div'); n.className='node';
+    n.style.left=(x/350*100)+'%'; n.style.top=(y/280*100)+'%';
+    const ic=document.createElement('div');
+    ic.style.cssText='background:#0d1a14;padding:5px;box-shadow:0 0 0 2px #4ade80, 0 0 16px -4px #4ade80';
+    ic.appendChild(makeCanvas(SPRITES[spr],2.5));
+    const lb=document.createElement('span'); lb.textContent=label;
+    n.append(ic,lb); wrap.appendChild(n);
+  });
+})();
+
+/* ============================================================
+   ÁRVORE DE HABILIDADES — trilhas do cristal até cada painel
+   ============================================================ */
+const PANELS=[
+  {id:'p1', row:1, col:'#a86bff', side:'r', pal:{q:'#e2d3ff',p:'#b78cff',P:'#7a45e0',A:'#4a2a9c',c:'#f0e6ff'}},
+  {id:'p2', row:1, col:'#4d8bff', side:'l', pal:{q:'#cfe2ff',p:'#7fb0ff',P:'#3564d8',A:'#1e3c94',c:'#e6f1ff'}},
+  {id:'p3', row:2, col:'#4ade80', side:'r', pal:{q:'#d4ffe4',p:'#86f0ac',P:'#2fa863',A:'#186b3d',c:'#eaffef'}},
+  {id:'p4', row:2, col:'#ff9f45', side:'l', pal:{q:'#ffe2c0',p:'#ffbe7e',P:'#e07a24',A:'#a04f10',c:'#fff0dc'}},
+  {id:'p5', row:3, col:'#e07bff', side:'r', pal:{q:'#f8d9ff',p:'#e2a3ff',P:'#b64ad4',A:'#7a2a94',c:'#fdeaff'}},
+  {id:'p6', row:3, col:'#45e0d5', side:'l', pal:{q:'#ccfff9',p:'#7ef0e4',P:'#28b0a6',A:'#136b66',c:'#e6fffc'}}
+];
+
+function drawWires(){
+  const tree=document.getElementById('tree'), svg=document.getElementById('wires'), core=document.getElementById('core');
+  const NS='http://www.w3.org/2000/svg';
+  const W=tree.clientWidth, H=tree.clientHeight;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML='';
+  tree.querySelectorAll('.gemnode').forEach(n=>n.remove());
+
+  const hub={x:core.offsetLeft+core.offsetWidth/2, y:core.offsetTop+core.offsetHeight/2};
+
+  PANELS.forEach(p=>{
+    const el=document.getElementById(p.id); if(!el) return;
+    const ax = p.side==='r' ? el.offsetLeft+el.offsetWidth+10 : el.offsetLeft-10;
+    const ay = el.offsetTop+el.offsetHeight/2;
+    /* ponto de partida no corpo do cristal, na direção do painel */
+    const out = p.row===2 ? 122 : 44;
+    const sx = hub.x + (p.side==='r' ? -out : out);
+    const sy = hub.y + (p.row===1 ? -128 : p.row===3 ? 128 : 0);
+    const c1x = sx + (ax-sx)*0.10, c1y = sy + (ay-sy)*0.85;
+    const c2x = sx + (ax-sx)*0.70, c2y = ay;
+    const d = `M ${sx} ${sy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ax} ${ay}`;
+
+    const glow=document.createElementNS(NS,'path');
+    glow.setAttribute('d',d); glow.setAttribute('fill','none');
+    glow.setAttribute('stroke',p.col); glow.setAttribute('stroke-width','10'); glow.setAttribute('opacity','.10');
+    svg.appendChild(glow);
+
+    const path=document.createElementNS(NS,'path');
+    path.setAttribute('d',d); path.setAttribute('fill','none');
+    path.setAttribute('stroke',p.col); path.setAttribute('stroke-width','4');
+    path.setAttribute('stroke-linecap','square'); path.setAttribute('stroke-dasharray','4 10');
+    path.setAttribute('opacity','.8');
+    svg.appendChild(path);
+
+    /* gema flutuante na metade da trilha */
+    const mid=path.getPointAtLength(path.getTotalLength()*0.45);
+    const gm=document.createElement('div');
+    gm.className='gemnode';
+    gm.style.left=(mid.x/W*100)+'%'; gm.style.top=(mid.y/H*100)+'%';
+    gm.style.filter=`drop-shadow(0 0 10px ${p.col})`;
+    gm.appendChild(makeCanvas(SPRITES.gemSmall, 2.6, p.pal));
+    tree.appendChild(gm);
+
+    /* encaixe no painel */
+    const knob=document.createElementNS(NS,'rect');
+    knob.setAttribute('x',ax-6); knob.setAttribute('y',ay-6);
+    knob.setAttribute('width',12); knob.setAttribute('height',12);
+    knob.setAttribute('fill',p.col);
+    knob.setAttribute('transform',`rotate(45 ${ax} ${ay})`);
+    svg.appendChild(knob);
+  });
+}
+
+/* ============================================================
+   ESCALA RESPONSIVA
+   ============================================================ */
+function fit(){
+  const k=Math.min(1, document.documentElement.clientWidth/1080);
+  document.getElementById('scaler').style.transform=`scale(${k})`;
+  document.querySelector('.stage').style.height=(1920*k)+'px';
+}
+window.addEventListener('resize', ()=>{ fit(); drawWires(); });
+document.fonts.ready.then(()=>{ fit(); drawWires(); });
+fit(); drawWires();
+</script>
