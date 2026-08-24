@@ -13,21 +13,24 @@
   --ink:#e9e6ff; --ink-dim:#b3accf; --ink-faint:#7d76a8;
   --gold:#f5c542; --gold-d:#a67c14;
   --c1:#a86bff; --c2:#4d8bff; --c3:#4ade80; --c4:#ff9f45; --c5:#e07bff; --c6:#45e0d5;
+  --c7:#8ad8ff;
   --px:'Press Start 2P',ui-monospace,monospace;   /* só ASCII: sem acentos */
   --lb:'Silkscreen',ui-monospace,monospace;       /* pixel COM acentuação  */
   --bd:'JetBrains Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--void);color:var(--ink)}
+html,body{margin:0;padding:0;background:var(--void);color:var(--ink);height:100%;overflow:hidden}
 body{font-family:var(--bd);-webkit-font-smoothing:antialiased}
 canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 
-.stage{width:100%;overflow:hidden;display:flex;justify-content:center;
+/* ---- palco da câmera: prezi, não scroll ---- */
+.stage{position:relative;width:100%;height:100vh;overflow:hidden;
   background:radial-gradient(120% 60% at 50% 0%, #14103a 0%, #07061a 55%, #04030c 100%)}
-.scaler{transform-origin:top center}
+.scaler{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform;
+  transition:transform 900ms cubic-bezier(.62,.02,.18,1)}
 
 .poster{
-  position:relative;width:1080px;height:1920px;padding:30px 28px 22px;
+  position:relative;width:1080px;height:2480px;padding:30px 28px 22px;
   display:flex;flex-direction:column;gap:20px;overflow:hidden;
   background:
     radial-gradient(58% 30% at 50% 50%, rgba(130,80,240,.22) 0%, rgba(130,80,240,0) 65%),
@@ -134,13 +137,62 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
   background:rgba(9,7,28,.8);box-shadow:0 0 0 3px #2b2266, inset 0 0 0 1px rgba(255,255,255,.05)}
 .foot-l{display:flex;align-items:center;gap:12px;font-family:var(--lb);font-weight:700;font-size:17px;letter-spacing:1.2px;color:#c2bbee}
 .foot-r{font-family:var(--lb);font-size:16px;letter-spacing:1.2px;color:var(--ink-faint)}
-@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+/* ============ 07 · ESCALA POR CORES ============ */
+.scale{position:relative;z-index:5;flex:0 0 auto;gap:13px}
+.scale-hint{margin:0 0 0 auto;font-family:var(--lb);font-size:14px;letter-spacing:1px;color:var(--ink-faint)}
+.gemrow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.gemcell{display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 4px 8px;cursor:pointer;
+  font:inherit;color:inherit;border:0;background:rgba(255,255,255,.035);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.10);transition:background .18s, box-shadow .18s, transform .18s}
+.gemcell canvas{animation:bob 5s ease-in-out infinite}
+.gemcell:nth-child(2n) canvas{animation-duration:6.2s}
+.gemcell:nth-child(3n) canvas{animation-duration:4.4s}
+.gemcell b{font-family:var(--px);font-size:11px;letter-spacing:1px;color:var(--g)}
+.gemcell small{font-family:var(--lb);font-size:14px;letter-spacing:.5px;color:var(--ink-dim)}
+.gemcell:hover{background:rgba(255,255,255,.075);box-shadow:inset 0 0 0 2px var(--g)}
+.gemcell.on{background:rgba(255,255,255,.09);transform:translateY(-3px);
+  box-shadow:inset 0 0 0 3px var(--g), 0 0 26px -6px var(--g)}
+.gemcell.on small{color:#fff}
+.gemdetail{--g:var(--c7);min-height:118px;padding:13px 15px;background:rgba(255,255,255,.04);
+  box-shadow:inset 0 0 0 2px var(--g);transition:box-shadow .25s}
+.gd-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.gd-head b{font-family:var(--px);font-size:19px;letter-spacing:1px;color:var(--g);text-shadow:0 3px 0 rgba(0,0,0,.5)}
+.gd-head i{font-style:normal;font-family:var(--lb);font-weight:700;font-size:15px;letter-spacing:2px;color:var(--ink-faint)}
+.gd-head span{margin-left:auto;font-family:var(--lb);font-weight:700;font-size:18px;letter-spacing:1px;color:#fff}
+.gemdetail p{margin:9px 0 0;font-size:15.5px;line-height:1.55;color:#d9d4f7;text-wrap:pretty}
+
+/* ============ NAVEGAÇÃO / FOCO ============ */
+.card{cursor:pointer;transition:opacity .3s ease, box-shadow .3s ease}
+.poster.focusing .card{opacity:.34}
+.poster.focusing .card.on{opacity:1;
+  box-shadow:0 0 0 3px var(--k), 0 0 0 6px #08061c, 0 0 0 9px rgba(255,255,255,.55),
+             0 0 70px -6px var(--k), inset 0 0 60px -14px var(--k)}
+.hud{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:90;
+  display:flex;align-items:center;gap:14px;padding:11px 16px;
+  background:rgba(9,7,28,.92);box-shadow:0 0 0 3px #2b2266, 0 6px 30px rgba(0,0,0,.6)}
+.hud-dots{display:flex;align-items:center;gap:11px}
+.hud-sep{width:2px;height:16px;background:rgba(255,255,255,.16)}
+.hud-dot{width:14px;height:14px;padding:0;border:0;cursor:pointer;background:rgba(255,255,255,.10);
+  box-shadow:0 0 0 2px rgba(0,0,0,.5);transition:all .22s ease}
+.hud-dot.gem{transform:rotate(45deg)}
+.hud-dot.seen{background:var(--g)}
+.hud-dot.on{background:var(--g);box-shadow:0 0 0 3px rgba(255,255,255,.85), 0 0 16px -2px var(--g)}
+.hud-dot.on.gem{transform:rotate(45deg) scale(1.35)}
+.hud-dot:not(.gem).on{transform:scale(1.35)}
+.hud-hint{font-family:var(--lb);font-size:13px;letter-spacing:1px;color:var(--ink-faint);white-space:nowrap}
+@media (max-width:720px){.hud-hint{display:none}}
+.zoombtn{position:fixed;left:16px;top:16px;z-index:90;cursor:pointer;border:0;
+  font-family:var(--px);font-size:11px;letter-spacing:1px;padding:12px 14px;
+  background:rgba(9,7,28,.9);color:rgba(255,255,255,.88);
+  box-shadow:0 0 0 3px #2b2266, 0 6px 24px rgba(0,0,0,.55);transition:background .2s, color .2s}
+.zoombtn.overview{background:rgba(255,255,255,.92);color:#0a0818}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}.scaler{transition:none}}
 </style>
 
 <div class="stage">
  <div class="scaler" id="scaler">
   <div class="poster" id="poster">
-    <canvas class="bglayer" id="stars" width="1080" height="1920"></canvas>
+    <canvas class="bglayer" id="stars" width="1080" height="2480"></canvas>
     
     <div class="bglayer scan"></div>
 
@@ -266,11 +318,24 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
       </div>
     </main>
 
+    <!-- ======== 07 · ESCALA POR CORES DA FAMÍLIA CRYSTAL ======== -->
+    <section class="card scale" id="p7" style="--k:var(--c7)">
+      <div class="card-head">
+        <div class="num">07</div>
+        <h2 class="card-title">ESCALA POR CORES</h2>
+        <p class="scale-hint">clique num cristal · ← → navegar</p>
+      </div>
+      <div class="rule"></div>
+      <p class="body">Dois eixos definem qual Crystal usar: o <strong>número de pessoas</strong> na equipe e a <strong>criticidade</strong> do dano em caso de falha (conforto, dinheiro discricionário, dinheiro essencial, vida).</p>
+      <div class="gemrow" id="gemrow"></div>
+      <div class="gemdetail" id="gemdetail"></div>
+    </section>
+
     <div class="ground"><canvas id="scenery" width="1080" height="132"></canvas></div>
 
     <!-- ======== RODAPÉ ======== -->
     <footer class="foot">
-      <div class="foot-l"><span data-spr="gemTiny" data-scale="3"></span> SEIS ÁREAS PARA EXPLORAR A METODOLOGIA CRYSTAL</div>
+      <div class="foot-l"><span data-spr="gemTiny" data-scale="3"></span> SEIS ÁREAS · SETE CRISTAIS DA FAMÍLIA CRYSTAL</div>
       <div class="foot-r">INFOGRÁFICO ACADÊMICO</div>
     </footer>
   </div>
@@ -427,8 +492,9 @@ document.querySelectorAll('[data-spr]').forEach(el=>{
 (function(){
   const g=document.getElementById('stars').getContext('2d');
   let seed=20040; const rnd=()=> (seed=(seed*1103515245+12345)&0x7fffffff)/0x7fffffff;
-  for(let i=0;i<420;i++){
-    const x=Math.round(rnd()*1080), y=Math.round(rnd()*1920), r=rnd();
+  const cv=document.getElementById('stars');
+  for(let i=0;i<Math.round(420*cv.height/1920);i++){
+    const x=Math.round(rnd()*cv.width), y=Math.round(rnd()*cv.height), r=rnd();
     const s=r>0.94?3:(r>0.7?2:1);
     g.fillStyle = r>0.9?'rgba(180,235,255,.95)':(r>0.55?'rgba(200,180,255,.5)':'rgba(255,255,255,.26)');
     g.fillRect(x,y,s,s);
@@ -603,14 +669,147 @@ function drawWires(){
 }
 
 /* ============================================================
-   ESCALA RESPONSIVA
+   ESCALA POR CORES — a família Crystal, de CLEAR a VIOLET
+   (fonte: Alistair Cockburn — eixo de pessoas × criticidade)
    ============================================================ */
-function fit(){
-  const k=Math.min(1, document.documentElement.clientWidth/1080);
-  document.getElementById('scaler').style.transform=`scale(${k})`;
-  document.querySelector('.stage').style.height=(1920*k)+'px';
+const CRYSTALS=[
+  {nome:'CLEAR',  tag:'D6',    meta:'até 8 pessoas · uma sala', hue:250, chroma:0.030, lift:1.10,
+   body:'O único nível totalmente documentado por Cockburn. Comunicação osmótica e entregas frequentes.'},
+  {nome:'YELLOW', tag:'D20',   meta:'até 20 pessoas',           hue:95,  chroma:0.155, lift:1.04,
+   body:'Papéis mais explícitos e testes automatizados entram em cena. Ainda leve, mas com coordenação formalizada.'},
+  {nome:'ORANGE', tag:'D40',   meta:'até 40 pessoas',           hue:62,  chroma:0.165, lift:1.00,
+   body:'Múltiplas equipes, arquitetura compartilhada e sincronização entre frentes tornam-se o problema central.'},
+  {nome:'RED',    tag:'D80',   meta:'até 80 pessoas',           hue:26,  chroma:0.175, lift:0.98,
+   body:'Programa grande: governança, integração contínua entre times e rastreabilidade ganham peso.'},
+  {nome:'MAROON', tag:'D200',  meta:'até 200 pessoas',          hue:8,   chroma:0.150, lift:0.86,
+   body:'Escala corporativa. Cockburn descreve o território, mas não prescreve o método em detalhe.'},
+  {nome:'BLUE',   tag:'D500',  meta:'até 500 pessoas',          hue:252, chroma:0.170, lift:1.00,
+   body:'Nível teórico da escala. Serve para posicionar o projeto, não como receita pronta.'},
+  {nome:'VIOLET', tag:'D1000', meta:'até 1000 pessoas',         hue:300, chroma:0.170, lift:1.02,
+   body:'Extremo da família: o método precisa ser reinventado a cada ordem de grandeza.'}
+];
+
+/* rampa de 4 tons + contorno, no mesmo esquema do sprite procedural */
+const gemAccent = g => `oklch(${(0.74*g.lift).toFixed(3)} ${g.chroma} ${g.hue})`;
+function gemPal(g){
+  const L = l => `oklch(${(l*g.lift).toFixed(3)} ${(g.chroma*(1.25-l*0.45)).toFixed(3)} ${g.hue})`;
+  return {A:L(0.38), P:L(0.55), p:L(0.72), q:L(0.90), c:L(0.97), W:L(0.99), K:L(0.16)};
 }
-window.addEventListener('resize', ()=>{ fit(); drawWires(); });
-document.fonts.ready.then(()=>{ fit(); drawWires(); });
-fit(); drawWires();
+
+const gemrow=document.getElementById('gemrow'), gemdetail=document.getElementById('gemdetail');
+CRYSTALS.forEach((g,i)=>{
+  const cell=document.createElement('button');
+  cell.type='button'; cell.className='gemcell'; cell.style.setProperty('--g', gemAccent(g));
+  cell.appendChild(makeCanvas(SPRITES.gemSmall, 3.2, gemPal(g)));
+  const n=document.createElement('b'); n.textContent=g.nome;
+  const p=document.createElement('small'); p.textContent='≤ '+g.meta.split(' ')[1];
+  cell.append(n,p);
+  cell.addEventListener('click', e=>{ e.stopPropagation(); go(6+i); });
+  gemrow.appendChild(cell);
+});
+
+function showGem(i){
+  const g=CRYSTALS[i];
+  gemdetail.style.setProperty('--g', gemAccent(g));
+  gemdetail.innerHTML =
+    `<div class="gd-head"><b></b><i></i><span></span></div><p></p>`;
+  gemdetail.querySelector('b').textContent=g.nome;
+  gemdetail.querySelector('i').textContent=g.tag;
+  gemdetail.querySelector('.gd-head span').textContent=g.meta;
+  gemdetail.querySelector('p').textContent=g.body;
+  gemrow.querySelectorAll('.gemcell').forEach((c,k)=>c.classList.toggle('on', k===i));
+}
+
+/* ============================================================
+   NAVEGAÇÃO — 6 painéis + 7 cristais, clique · ← → · Esc
+   ============================================================ */
+const STOPS = PANELS.map(p=>({kind:'card', el:document.getElementById(p.id), color:p.col}))
+  .concat(CRYSTALS.map((g,i)=>({kind:'gem', i, color:gemAccent(g)})));
+
+const poster=document.getElementById('poster');
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const seen=new Set();
+let cur=-1;
+
+const hud=document.createElement('nav');
+hud.className='hud';
+hud.innerHTML='<div class="hud-dots"></div><div class="hud-sep"></div><div class="hud-hint">← → navegar · esc visão geral</div>';
+const dots=hud.querySelector('.hud-dots');
+STOPS.forEach((s,k)=>{
+  const d=document.createElement('button');
+  d.type='button'; d.className='hud-dot'+(s.kind==='gem'?' gem':'');
+  d.style.setProperty('--g', s.color);
+  d.title=(s.kind==='card' ? s.el.querySelector('.card-title').textContent : CRYSTALS[s.i].nome);
+  d.addEventListener('click', ()=>go(k));
+  dots.appendChild(d);
+  if(k===5){ const sep=document.createElement('div'); sep.className='hud-sep'; dots.appendChild(sep); }
+});
+document.body.appendChild(hud);
+
+const zoombtn=document.createElement('button');
+zoombtn.type='button'; zoombtn.className='zoombtn overview'; zoombtn.textContent='\u2922  ENTRAR';
+zoombtn.addEventListener('click', ()=> go(cur<0 ? 0 : cur));
+document.body.appendChild(zoombtn);
+
+function go(k){
+  cur = (k===cur) ? -1 : k;
+  if(cur>=0) seen.add(cur);
+  poster.classList.toggle('focusing', cur>=0);
+  STOPS.forEach((s,i)=>{ if(s.kind==='card') s.el.classList.toggle('on', i===cur); });
+  document.getElementById('p7').classList.toggle('on', cur>=6);
+  dots.querySelectorAll('.hud-dot').forEach((d,i)=>{
+    d.classList.toggle('on', i===cur);
+    d.classList.toggle('seen', seen.has(i));
+  });
+  const s=STOPS[cur];
+  if(s && s.kind==='gem') showGem(s.i);
+  zoombtn.classList.toggle('overview', cur<0);
+  zoombtn.textContent = cur<0 ? '\u2922  ENTRAR' : '\u2921  VISÃO GERAL';
+  camera();
+}
+
+PANELS.forEach((p,k)=>{
+  const el=document.getElementById(p.id);
+  el.addEventListener('click', ()=>go(k));
+});
+document.getElementById('p7').addEventListener('click', ()=>{ if(cur<6) go(6); });
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); go((cur+1)%STOPS.length); }
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go((cur<=0?STOPS.length:cur)-1); }
+  else if(e.key==='Escape'&&cur>=0){ go(cur); }
+});
+
+showGem(0);   /* a escala nasce legível, mesmo sem ninguém clicar */
+
+/* ============================================================
+   CÂMERA — visão geral no início, zoom dinâmico a cada parada
+   ============================================================ */
+const scaler=document.getElementById('scaler');
+
+/* caixa do elemento em coordenadas do pôster (offset* ignora transforms) */
+function boxOf(el, pad){
+  let x=0, y=0, n=el;
+  while(n && n!==poster){ x+=n.offsetLeft; y+=n.offsetTop; n=n.offsetParent; }
+  return {x:x-pad, y:y-pad, w:el.offsetWidth+pad*2, h:el.offsetHeight+pad*2};
+}
+const union=(a,b)=>{ const x=Math.min(a.x,b.x), y=Math.min(a.y,b.y);
+  return {x, y, w:Math.max(a.x+a.w,b.x+b.w)-x, h:Math.max(a.y+a.h,b.y+b.h)-y}; };
+
+function camera(){
+  const vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
+  const s=STOPS[cur];
+  let box, fill;
+  if(!s){ box={x:0, y:0, w:poster.offsetWidth, h:poster.offsetHeight}; fill=0.98; }
+  else if(s.kind==='card'){ box=boxOf(s.el, 40); fill=0.92; }
+  else { box=union(boxOf(gemrow,28), boxOf(gemdetail,28)); fill=0.92; }
+  const avh=vh-96;                       /* faixa reservada para o HUD fixo */
+  const k=Math.min(vw/box.w, avh/box.h)*fill;
+  const tx=vw/2-(box.x+box.w/2)*k, ty=avh/2-(box.y+box.h/2)*k;
+  scaler.style.transform=`translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${k.toFixed(4)})`;
+}
+
+window.addEventListener('resize', ()=>{ drawWires(); camera(); });
+document.fonts.ready.then(()=>{ drawWires(); camera(); });
+drawWires(); camera();
 </script>
