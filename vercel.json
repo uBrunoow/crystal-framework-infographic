@@ -1,29 +1,22 @@
 {
-  "name": "crystal-framework-infographic",
   "version": 2,
   "buildCommand": "echo 'Static site - no build needed'",
   "outputDirectory": ".",
-  "public": true,
-  "env": {},
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/infografico-crystal.html",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600, must-revalidate"
-        },
-        {
-          "key": "Content-Type",
-          "value": "text/html; charset=utf-8"
         }
       ]
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/",
+      "destination": "/infografico-crystal.html"
     }
   ]
 }
