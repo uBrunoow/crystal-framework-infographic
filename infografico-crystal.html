@@ -186,6 +186,39 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
   background:rgba(9,7,28,.9);color:rgba(255,255,255,.88);
   box-shadow:0 0 0 3px #2b2266, 0 6px 24px rgba(0,0,0,.55);transition:background .2s, color .2s}
 .zoombtn.overview{background:rgba(255,255,255,.92);color:#0a0818}
+
+/* ============ CICLO EM ANEL (ZOOM NARRATIVO) ============ */
+.cyclering{position:absolute;left:0;top:0;width:0;height:0;overflow:visible;opacity:0;pointer-events:none;transition:opacity .5s ease}
+body.ring-open .cyclering{opacity:1;pointer-events:auto}
+body.ring-open .card{opacity:.22;transition:opacity .3s}
+body.ring-open #wires,body.ring-open .gemnode{opacity:0;transition:opacity .3s}
+body.ring-open .hud:not(.ringhud),body.ring-open .zoombtn{display:none}
+.cygem{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;
+  width:360px;gap:14px;border:0;padding:0;background:none;cursor:pointer;color:inherit;font:inherit}
+.cygem-art{position:relative;filter:drop-shadow(0 0 16px var(--g))}
+.cygem-icon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);mix-blend-mode:luminosity;opacity:.92;pointer-events:none}
+.cygem-label{display:block;width:100%;font-family:var(--lb);font-weight:700;font-size:80px;letter-spacing:1px;color:#fff;
+  text-shadow:0 4px 0 #05040e;white-space:normal;line-height:1.15;text-align:center}
+.cygem.on .cygem-art{filter:drop-shadow(0 0 30px var(--g)) brightness(1.15)}
+.ringwires{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.ringspark{fill:#fff;filter:drop-shadow(0 0 6px #c9a9ff) drop-shadow(0 0 12px #8ad8ff);
+  animation:sparkpulse 2.4s ease-in-out infinite}
+@keyframes sparkpulse{0%,100%{opacity:.3;r:3}50%{opacity:1;r:5.5}}
+.ringhud{display:none;gap:14px}
+body.ring-open .ringhud{display:flex}
+.ringclose{border:0;cursor:pointer;font-family:var(--lb);font-weight:700;font-size:14px;letter-spacing:1px;
+  color:#fff;background:rgba(255,255,255,.08);padding:8px 14px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25);transition:background .2s}
+.ringclose:hover{background:rgba(255,255,255,.18)}
+.ringdetail{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);z-index:91;
+  width:min(92vw,540px);padding:14px 18px;display:none;
+  background:rgba(9,7,28,.95);box-shadow:0 0 0 3px var(--g,#8ad8ff),0 10px 40px rgba(0,0,0,.6)}
+.ringdetail.show{display:block}
+.ringdetail b{display:block;font-family:var(--px);font-size:16px;letter-spacing:1px;color:var(--g,#8ad8ff);
+  text-shadow:0 3px 0 rgba(0,0,0,.5)}
+.ringdetail p{margin:9px 0 0;font-size:15px;line-height:1.55;color:#d9d4f7}
+.cyclebtn{border:0;margin:0;font:inherit;letter-spacing:inherit;cursor:pointer;width:100%;text-align:inherit;transition:filter .2s}
+.cyclebtn:hover{filter:brightness(1.2)}
+
 @media (prefers-reduced-motion: reduce){*{animation:none !important}.scaler{transition:none}}
 </style>
 
@@ -205,7 +238,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
         <span data-spr="gemSmall" data-scale="5"></span>
       </div>
       <p class="subtitle">METODOLOGIA ÁGIL DE DESENVOLVIMENTO DE SOFTWARE</p>
-      <div class="pillars">PESSOAS<i>✦</i>COMUNICAÇÃO<i>✦</i>ADAPTAÇÃO<i>✦</i>ENTREGA FREQUENTE</div>
+      <div class="pillars">COMUNICAÇÃO OSMÓTICA<i>✦</i>ENTREGA FREQUENTE<i>✦</i>REFLEXÃO CONTÍNUA<i>✦</i>SEGURANÇA PESSOAL</div>
     </header>
 
     <!-- ======== ÁRVORE DE CONHECIMENTO ======== -->
@@ -216,7 +249,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
       <section class="card" id="p1" style="--k:var(--c1)">
         <div class="card-head"><div class="num">01</div><h2 class="card-title">FOCO DA METODOLOGIA</h2></div>
         <div class="rule"></div>
-        <p class="body">Crystal é uma <strong>família de metodologias ágeis</strong> focada em pessoas, comunicação, colaboração e adaptação do processo às características do projeto.</p>
+        <p class="body">Crystal é uma <strong>família de metodologias ágeis</strong> que ajusta o peso do processo ao tamanho da equipe e à criticidade do sistema, priorizando pessoas, comunicação e segurança do resultado acima de processos rígidos.</p>
         <div class="fill">
           <div class="iconrow">
             <span class="icobox" data-spr="target" data-scale="3"></span>
@@ -237,7 +270,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
         <div class="card-head"><div class="num">02</div><h2 class="card-title">ORIGEM</h2></div>
         <div class="rule"></div>
         <div style="display:flex;gap:16px;align-items:flex-start">
-          <p class="body" style="flex:1">Desenvolvida por <strong>Alistair Cockburn</strong>, um dos signatários do Manifesto Ágil, a partir de estudos sobre equipes e projetos de desenvolvimento de software.</p>
+          <p class="body" style="flex:1">Criada por <strong>Alistair Cockburn</strong>, signatário do Manifesto Ágil, após entrevistar dezenas de equipes reais na IBM e concluir que não existe processo ideal único — cada projeto pede seu próprio nível de formalidade.</p>
         </div>
         <div class="fill" style="align-items:center;justify-content:center">
           <span data-spr="mage" data-scale="7"></span>
@@ -255,7 +288,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
             <span data-spr="gemTiny" data-scale="3.4"></span>
           </div>
         </div>
-        <div class="stamp">DESENVOLVIMENTO ITERATIVO E INCREMENTAL</div>
+        <button type="button" class="stamp cyclebtn" id="ringOpenBtn3">◆ CLIQUE PARA VER O CICLO COMPLETO</button>
       </section>
 
       <!-- 04 -->
@@ -269,7 +302,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
           <div class="row"><span class="icobox" data-spr="flask" data-scale="3"></span><span><b>TESTES</b></span></div>
           <div class="row"><span class="icobox" data-spr="box" data-scale="3"></span><span><b>INCREMENTOS</b><small>versões funcionais</small></span></div>
         </div>
-        <div class="quote">A documentação é adaptada às necessidades do projeto.</div>
+        <button type="button" class="stamp cyclebtn" id="ringOpenBtn4">◆ CLIQUE PARA VER TODOS OS ARTEFATOS</button>
       </section>
 
       <!-- 05 -->
@@ -278,15 +311,15 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
         <div class="rule"></div>
         <div class="fill">
           <div class="rows">
-            <div class="row"><span class="icobox" data-spr="king" data-scale="2.8"></span><span><b>STAKEHOLDERS</b></span></div>
-            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#6f4ae0,Z:#8a5ff0,X:#f5c542"></span><span><b>LÍDER / COORDENADOR</b></span></div>
-            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#2a5aa8,Z:#3e7fd8,X:#9fd0ff"></span><span><b>DESENVOLVEDORES</b></span></div>
-            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#2f6b46,Z:#3aa06a,X:#b6ffd8"></span><span><b>TESTADORES</b></span></div>
-            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#7a2f6b,Z:#b04ac0,X:#ffc4f2"></span><span><b>USUÁRIOS / CLIENTES</b></span></div>
+            <div class="row"><span class="icobox" data-spr="king" data-scale="2.8"></span><span><b>SPONSOR</b><small>patrocinador executivo</small></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#6f4ae0,Z:#8a5ff0,X:#f5c542"></span><span><b>LEAD DESIGNER</b><small>líder técnico</small></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#2a5aa8,Z:#3e7fd8,X:#9fd0ff"></span><span><b>DESIGNER-PROGRAMMERS</b><small>desenvolvem e testam</small></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#2f6b46,Z:#3aa06a,X:#b6ffd8"></span><span><b>COORDINATOR / TESTER</b></span></div>
+            <div class="row"><span class="icobox" data-spr="hero" data-scale="2.8" data-swap="A:#7a2f6b,Z:#b04ac0,X:#ffc4f2"></span><span><b>EXPERT USER</b><small>usuário especialista</small></span></div>
           </div>
           <div class="iconrow"><span class="icobox" data-spr="chat" data-scale="3.4"></span><span class="icobox" data-spr="people" data-scale="3"></span></div>
         </div>
-        <div class="quote">Comunicação e colaboração são essenciais.</div>
+        <button type="button" class="stamp cyclebtn" id="ringOpenBtn5">◆ CLIQUE PARA VER TODOS OS PAPÉIS</button>
       </section>
 
       <!-- 06 -->
@@ -299,7 +332,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
             <p class="body" style="flex:1"><strong>Alistair Cockburn</strong><br>Crystal Clear: A Human-Powered Methodology for Small Teams <strong>(2004)</strong></p>
           </div>
         </div>
-        <div class="stamp">CONSULTAR TAMBÉM DOCUMENTAÇÕES E MATERIAIS OFICIAIS SOBRE A METODOLOGIA CRYSTAL</div>
+        <div class="stamp">VER TAMBÉM: "AGILE SOFTWARE DEVELOPMENT" (2002), DO MESMO AUTOR</div>
 
       </section>
 
@@ -326,7 +359,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
         <p class="scale-hint">clique num cristal · ← → navegar</p>
       </div>
       <div class="rule"></div>
-      <p class="body">Dois eixos definem qual Crystal usar: o <strong>número de pessoas</strong> na equipe e a <strong>criticidade</strong> do dano em caso de falha (conforto, dinheiro discricionário, dinheiro essencial, vida).</p>
+      <p class="body">Dois eixos definem qual Crystal usar: o <strong>número de pessoas</strong> na equipe (cor) e a <strong>criticidade</strong> do dano em caso de falha (C-conforto, D-dinheiro discricionário, E-dinheiro essencial, L-vida). Quanto maior a criticidade, mais rigor o processo exige.</p>
       <div class="gemrow" id="gemrow"></div>
       <div class="gemdetail" id="gemdetail"></div>
     </section>
@@ -339,6 +372,7 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
       <div class="foot-r">INFOGRÁFICO ACADÊMICO</div>
     </footer>
   </div>
+  <div class="cyclering" id="cyclering"><svg id="ringWires" class="ringwires"></svg></div>
  </div>
 </div>
 
@@ -358,6 +392,9 @@ const PAL = {
   T:'#6b4526', t:'#a3703c', F:'#f0c09a',
   A:'#5a3fb0', Z:'#7a52d8', X:'#c9a9ff'   /* trocáveis por data-swap */
 };
+
+/* estado da navegação isolada dos anéis (ciclo de vida, artefatos, papéis — ver seção ANÉIS) */
+let ringOpen=false, ringIdx=-1, ringPositions=[], ringStages=[], ringHome=-1;
 
 const SPRITES = {
   target:[
@@ -448,6 +485,7 @@ SPRITES.gem      = gemRows(40,13);
 SPRITES.gemSide  = gemRows(26,7);
 SPRITES.gemSmall = gemRows(16,5);
 SPRITES.gemTiny  = gemRows(11,3);
+SPRITES.gemRing  = gemRows(20,8);   /* cristal mais "gordinho" (mais largo) p/ caber ícone gravado com clareza */
 SPRITES.base = [
   "...ssssssssssssssss...","..sSSSSSSSSSSSSSSSSs..",".sSSSSSSSSSSSSSSSSSSs.",
   "sSSsSSSSsSSSSsSSSSsSSs","sSSSSSSSSSSSSSSSSSSSSs",".ssssssssssssssssssss.",
@@ -576,8 +614,8 @@ document.querySelectorAll('[data-spr]').forEach(el=>{
    ============================================================ */
 (function(){
   const wrap=document.getElementById('cycle'), svg=document.getElementById('cycleSvg');
-  const steps=[['PLANEJAR','scroll'],['DESENVOLVER','code'],['ENTREGAR','box'],
-               ['FEEDBACK','chat'],['ADAPTAR','gear'],['REPETIR','loop']];
+  const steps=[['PROJETO','scroll'],['ENTREGA','box'],['ITERAÇÃO','loop'],
+               ['INTEGRAÇÃO','gear'],['SEMANA/DIA','chat'],['EPISÓDIO','code']];
   const CX=175, CY=138, R=104, NS='http://www.w3.org/2000/svg';
   const ring=document.createElementNS(NS,'circle');
   ring.setAttribute('cx',CX); ring.setAttribute('cy',CY); ring.setAttribute('r',R);
@@ -674,19 +712,19 @@ function drawWires(){
    ============================================================ */
 const CRYSTALS=[
   {nome:'CLEAR',  tag:'D6',    meta:'até 8 pessoas · uma sala', hue:250, chroma:0.030, lift:1.10,
-   body:'O único nível totalmente documentado por Cockburn. Comunicação osmótica e entregas frequentes.'},
+   body:'O nível mais detalhado por Cockburn (substitui o antigo Crystal Orange Web). Equipe cabe numa sala só, comunicação osmótica e entregas a cada 1-2 semanas.'},
   {nome:'YELLOW', tag:'D20',   meta:'até 20 pessoas',           hue:95,  chroma:0.155, lift:1.04,
-   body:'Papéis mais explícitos e testes automatizados entram em cena. Ainda leve, mas com coordenação formalizada.'},
+   body:'Papéis mais explícitos e testes automatizados entram em cena. Ainda leve, mas com coordenação formalizada entre subgrupos.'},
   {nome:'ORANGE', tag:'D40',   meta:'até 40 pessoas',           hue:62,  chroma:0.165, lift:1.00,
-   body:'Múltiplas equipes, arquitetura compartilhada e sincronização entre frentes tornam-se o problema central.'},
+   body:'Múltiplas equipes, arquitetura compartilhada e sincronização entre frentes tornam-se o problema central de gestão.'},
   {nome:'RED',    tag:'D80',   meta:'até 80 pessoas',           hue:26,  chroma:0.175, lift:0.98,
-   body:'Programa grande: governança, integração contínua entre times e rastreabilidade ganham peso.'},
+   body:'Programa grande: governança entre times, integração contínua e rastreabilidade de requisitos ganham peso.'},
   {nome:'MAROON', tag:'D200',  meta:'até 200 pessoas',          hue:8,   chroma:0.150, lift:0.86,
-   body:'Escala corporativa. Cockburn descreve o território, mas não prescreve o método em detalhe.'},
+   body:'Escala corporativa. Cockburn mapeia o território e os riscos, mas não prescreve o método em detalhe.'},
   {nome:'BLUE',   tag:'D500',  meta:'até 500 pessoas',          hue:252, chroma:0.170, lift:1.00,
-   body:'Nível teórico da escala. Serve para posicionar o projeto, não como receita pronta.'},
+   body:'Extrapolação teórica da escala, útil para posicionar programas enormes — não é uma receita pronta.'},
   {nome:'VIOLET', tag:'D1000', meta:'até 1000 pessoas',         hue:300, chroma:0.170, lift:1.02,
-   body:'Extremo da família: o método precisa ser reinventado a cada ordem de grandeza.'}
+   body:'Extremo da família: em cada ordem de grandeza a equipe precisa reinventar suas próprias regras de trabalho.'}
 ];
 
 /* rampa de 4 tons + contorno, no mesmo esquema do sprite procedural */
@@ -752,6 +790,7 @@ zoombtn.addEventListener('click', ()=> go(cur<0 ? 0 : cur));
 document.body.appendChild(zoombtn);
 
 function go(k){
+  if(ringOpen) return;
   cur = (k===cur) ? -1 : k;
   if(cur>=0) seen.add(cur);
   poster.classList.toggle('focusing', cur>=0);
@@ -775,6 +814,12 @@ PANELS.forEach((p,k)=>{
 document.getElementById('p7').addEventListener('click', ()=>{ if(cur<6) go(6); });
 
 document.addEventListener('keydown', e=>{
+  if(ringOpen){
+    if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); setRingIndex(ringIdx<0?0:(ringIdx+1)%ringStages.length); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); setRingIndex(ringIdx<=0?ringStages.length-1:ringIdx-1); }
+    else if(e.key==='Escape'){ closeRing(); }
+    return;
+  }
   if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); go((cur+1)%STOPS.length); }
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go((cur<=0?STOPS.length:cur)-1); }
   else if(e.key==='Escape'&&cur>=0){ go(cur); }
@@ -798,12 +843,23 @@ const union=(a,b)=>{ const x=Math.min(a.x,b.x), y=Math.min(a.y,b.y);
 
 function camera(){
   const vw=document.documentElement.clientWidth, vh=document.documentElement.clientHeight;
-  const s=STOPS[cur];
-  let box, fill;
-  if(!s){ box={x:0, y:0, w:poster.offsetWidth, h:poster.offsetHeight}; fill=0.98; }
-  else if(s.kind==='card'){ box=boxOf(s.el, 40); fill=0.92; }
-  else { box=union(boxOf(gemrow,28), boxOf(gemdetail,28)); fill=0.92; }
   const avh=vh-96;                       /* faixa reservada para o HUD fixo */
+  let box, fill;
+  if(ringOpen){
+    if(ringIdx<0){
+      box={x:0,y:0,w:poster.offsetWidth,h:poster.offsetHeight};
+      ringPositions.forEach(p=>{ box=union(box, {x:p.x-420,y:p.y-420,w:840,h:840}); });
+      fill=0.94;
+    } else {
+      const p=ringPositions[ringIdx];
+      box={x:p.x-480,y:p.y-480,w:960,h:960}; fill=0.85;
+    }
+  } else {
+    const s=STOPS[cur];
+    if(!s){ box={x:0, y:0, w:poster.offsetWidth, h:poster.offsetHeight}; fill=0.98; }
+    else if(s.kind==='card'){ box=boxOf(s.el, 40); fill=0.92; }
+    else { box=union(boxOf(gemrow,28), boxOf(gemdetail,28)); fill=0.92; }
+  }
   const k=Math.min(vw/box.w, avh/box.h)*fill;
   const tx=vw/2-(box.x+box.w/2)*k, ty=avh/2-(box.y+box.h/2)*k;
   scaler.style.transform=`translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${k.toFixed(4)})`;
@@ -812,4 +868,142 @@ function camera(){
 window.addEventListener('resize', ()=>{ drawWires(); camera(); });
 document.fonts.ready.then(()=>{ drawWires(); camera(); });
 drawWires(); camera();
+
+/* ============================================================
+   ANÉIS — zoom-out narrativo a partir dos cards 03, 04 e 05
+   (fonte: Alistair Cockburn, Crystal Clear, Caps. 4 e 5)
+   ============================================================ */
+const CYCLE_STAGES=[
+  {label:'CICLO DO PROJETO', spr:'scroll',
+   desc:'O maior ciclo: começa com o chartering (montar a equipe, avaliar riscos e ajustar as convenções), passa por dois ou mais ciclos de entrega e termina num ritual de encerramento do projeto.'},
+  {label:'CICLO DE ENTREGA', spr:'box',
+   desc:'A cada entrega o plano é recalibrado, uma ou mais iterações geram código integrado e testado, o software chega a usuários reais e a equipe encerra com um ritual de reflexão sobre produto e processo.'},
+  {label:'CICLO DE ITERAÇÃO', spr:'loop',
+   desc:'Dura de uma semana a dois meses. Tem três partes: planejamento da iteração, atividades diárias e de integração, e um encerramento com reflection workshop e celebração.'},
+  {label:'CICLO DE INTEGRAÇÃO', spr:'gear',
+   desc:'Pode durar de meia hora a vários dias — da integração contínua a builds diários ou semanais. Quanto mais curto, menor o risco de divergência entre o trabalho dos desenvolvedores.'},
+  {label:'SEMANA E DIA', spr:'chat',
+   desc:'Os únicos ciclos com ritmo de calendário. A semana traz reuniões e rituais de equipe; o dia começa com um daily stand-up e se organiza em um ou mais episódios de desenvolvimento.'},
+  {label:'EPISÓDIO DE DESENVOLVIMENTO', spr:'code',
+   desc:'A menor unidade de trabalho, termo cunhado por Ward Cunningham: uma pessoa projeta, programa, testa e registra uma tarefa pequena no controle de versão — de 15 minutos a poucos dias.'}
+];
+
+const ARTIFACT_STAGES=[
+  {label:'REQUISITOS', spr:'scroll',
+   desc:'Lista de atores e objetivos, casos de uso e arquivo de requisitos — construídos junto com o Business Expert e o Expert User.'},
+  {label:'PLANEJAMENTO', spr:'check',
+   desc:'Mapa do projeto, plano de release e plano de iteração — mantidos pelo Coordinator para dar visibilidade de status ao Sponsor.'},
+  {label:'CÓDIGO-FONTE', spr:'code',
+   desc:'Telas, arquitetura do sistema e modelo de domínio comum, produzidos pelos Designer-Programmers com a arquitetura assinada pelo Lead Designer.'},
+  {label:'TESTES', spr:'flask',
+   desc:'Testes escritos pelos próprios Designer-Programmers junto ao código, mais os relatórios de bugs registrados pelo Tester.'},
+  {label:'INCREMENTOS', spr:'box',
+   desc:'Versões funcionais entregues a cada ciclo de entrega, acompanhadas de manual e texto de ajuda produzidos pelo Writer.'}
+];
+
+const ROLE_STAGES=[
+  {label:'SPONSOR', spr:'king',
+   desc:'Aloca (ou defende) o orçamento e mantém a visão de longo prazo. Decide quando continuar, cortar escopo ou encerrar o projeto, equilibrando valor entregue e dinheiro gasto.'},
+  {label:'LEAD DESIGNER', spr:'mage',
+   desc:'O técnico mais experiente da equipe. Faz o design principal, percebe quando o projeto sai dos trilhos e lidera a oficina de modelagem das convenções da metodologia.'},
+  {label:'DESIGNER-PROGRAMMERS', spr:'hero',
+   desc:'Projetam e programam — no Crystal Clear as duas atividades são inseparáveis. Cada um entrega telas, arquitetura, modelo de domínio, código-fonte e testes.'},
+  {label:'COORDINATOR / TESTER', spr:'check',
+   desc:'O Coordinator registra decisões e dá visibilidade do status ao Sponsor; o Tester (papel muitas vezes revezado entre a equipe) garante qualidade e reporta bugs.'},
+  {label:'EXPERT USER', spr:'people',
+   desc:'Conhece o dia a dia operacional do sistema — atalhos, telas mais usadas, exceções do trabalho real. Complementa o Business Expert, que sabe as regras de negócio.'}
+];
+
+const cyclering=document.getElementById('cyclering');
+function buildRingWires(){
+  const svg=document.getElementById('ringWires'), NS='http://www.w3.org/2000/svg';
+  svg.setAttribute('width', poster.offsetWidth);
+  svg.setAttribute('height', poster.offsetHeight);
+  svg.innerHTML='';
+  const N=ringPositions.length, DOTS=9;
+  for(let i=0;i<N;i++){
+    const a=ringPositions[i], b=ringPositions[(i+1)%N];
+    const glow=document.createElementNS(NS,'line');
+    glow.setAttribute('x1',a.x); glow.setAttribute('y1',a.y);
+    glow.setAttribute('x2',b.x); glow.setAttribute('y2',b.y);
+    glow.setAttribute('stroke','rgba(180,140,255,.16)'); glow.setAttribute('stroke-width','10');
+    svg.appendChild(glow);
+    for(let d=1; d<DOTS; d++){
+      const t=d/DOTS, x=a.x+(b.x-a.x)*t, y=a.y+(b.y-a.y)*t;
+      const c=document.createElementNS(NS,'circle');
+      c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',4);
+      c.setAttribute('class','ringspark');
+      c.style.animationDelay=((i*DOTS+d)*0.12)+'s';
+      svg.appendChild(c);
+    }
+  }
+}
+function renderRing(stages){
+  const cx=poster.offsetWidth/2, cy=poster.offsetHeight/2;
+  const rx=poster.offsetWidth/2+850, ry=poster.offsetHeight/2+850;
+  ringPositions=stages.map((s,i)=>{
+    const a=-Math.PI/2+i*(Math.PI*2/stages.length);
+    return {x:cx+rx*Math.cos(a), y:cy+ry*Math.sin(a)};
+  });
+  cyclering.innerHTML='<svg id="ringWires" class="ringwires"></svg>';
+  buildRingWires();
+  stages.forEach((s,i)=>{
+    const pos=ringPositions[i], pal=PANELS[i%PANELS.length];
+    const el=document.createElement('button');
+    el.type='button'; el.className='cygem';
+    el.style.left=pos.x+'px'; el.style.top=pos.y+'px'; el.style.setProperty('--g', pal.col);
+    const art=document.createElement('div'); art.className='cygem-art';
+    art.appendChild(makeCanvas(SPRITES.gemRing, 15, pal.pal));
+    const icon=makeCanvas(SPRITES[s.spr], 11); icon.className='cygem-icon';
+    art.appendChild(icon);
+    const lb=document.createElement('span'); lb.className='cygem-label'; lb.textContent=s.label;
+    el.append(art, lb);
+    el.addEventListener('click', e=>{ e.stopPropagation(); setRingIndex(i===ringIdx ? -1 : i); });
+    cyclering.appendChild(el);
+  });
+}
+
+const ringhud=document.createElement('nav');
+ringhud.className='hud ringhud';
+ringhud.innerHTML='<button type="button" class="ringclose">✕ FECHAR</button><div class="hud-sep"></div><div class="hud-hint">← → percorrer · esc fecha</div>';
+document.body.appendChild(ringhud);
+ringhud.querySelector('.ringclose').addEventListener('click', closeRing);
+
+const ringdetail=document.createElement('div');
+ringdetail.className='ringdetail';
+document.body.appendChild(ringdetail);
+
+function openRing(panelId, stages){
+  const idx=PANELS.findIndex(p=>p.id===panelId);
+  if(cur!==idx) go(idx);
+  ringHome=idx; ringStages=stages;
+  renderRing(stages);
+  ringOpen=true; ringIdx=-1;
+  document.body.classList.add('ring-open');
+  camera();
+}
+function closeRing(){
+  ringOpen=false; ringIdx=-1;
+  document.body.classList.remove('ring-open');
+  ringdetail.classList.remove('show');
+  cur=-1; go(ringHome);
+}
+function setRingIndex(i){
+  ringIdx=i;
+  cyclering.querySelectorAll('.cygem').forEach((el,k)=>el.classList.toggle('on', k===i));
+  if(i<0){ ringdetail.classList.remove('show'); }
+  else{
+    const s=ringStages[i], pal=PANELS[i%PANELS.length];
+    ringdetail.style.setProperty('--g', pal.col);
+    ringdetail.innerHTML=`<b>${s.label}</b><p>${s.desc}</p>`;
+    ringdetail.classList.add('show');
+  }
+  camera();
+}
+
+[['ringOpenBtn3','p3',CYCLE_STAGES], ['ringOpenBtn4','p4',ARTIFACT_STAGES], ['ringOpenBtn5','p5',ROLE_STAGES]]
+  .forEach(([btnId, panelId, stages])=>{
+    const btn=document.getElementById(btnId);
+    if(btn) btn.addEventListener('click', e=>{ e.stopPropagation(); openRing(panelId, stages); });
+  });
 </script>
